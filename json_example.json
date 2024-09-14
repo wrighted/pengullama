@@ -1,0 +1,5 @@
+{
+  "input": "Commit Message: Fix bug in the login function",
+  "output": "--- a/app/login.py\n+++ b/app/login.py\n@@ -1,4 +1,4 @@\n-def login(user):\n-    return user.is_authenticated\n+def login(user):\n+    if user.is_authenticated:\n+        return True\n+    return False\n"
+}
+
