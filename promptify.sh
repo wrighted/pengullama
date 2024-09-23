@@ -1,4 +1,26 @@
 #!/bin/bash
+
+# Usage: ./promptify.sh <num_commits>
+# 
+# This script processes the last num_commits (default: 10) from a git repository
+# and generates a JSON array with details of each commit. The details include:
+# - The commit message (as 'instruction').
+# - The lines of code removed before the commit (as 'input').
+# - The full diff between the current and previous commit (as 'result').
+#
+# The script assumes that the git repository is in the current directory.
+# The script requires 'jq' to be installed to parse JSON data.
+# The script follows the Alpaca prompt format for the JSON output.
+#
+# The JSON array is printed to stdout, where each object has the following structure:
+# {
+#   "instruction": "commit message",
+#   "input": "code before the commit",
+#   "result": "full diff"
+# }
+#
+# Arguments:
+#   num_commits: (Optional) The number of commits to process (default: 10).
     
 # Check if the number of commits is provided, default to 10 if not
 NUM_COMMITS=${1:-10}

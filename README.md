@@ -63,8 +63,10 @@ Wrote a script to format git histories to conform to Aplaca prompt standard.
 For more details see [the script](./promptify.sh).
 
 Attempted to train llama 3.1 8B on latest 100 commits of Zephyr, but quickly
-ran out of memory when adding any more than 1 data point.
+ran out of memory when adding any more than 1 data point. Was not sucessful
+in memory minimization.
 
-Ported my code to Google Colab, which provides a Tesla T4 for free.
-
+Ported code to Google Colab, which provides a Tesla T4 runtime for free.
 Uploaded resulting model to my [Hugging Face](https://huggingface.co/wrighted/zephllama).
+
+See [this notebook](./notebooks/week_2.ipynb) for more details.
