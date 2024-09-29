@@ -37,12 +37,25 @@ while IFS= read -r commit; do
     # Get the previous commit hash
     parent_commit=$(git rev-list --parents -n 1 "$commit_hash" | cut -d' ' -f2)
 
-    # Get the code before the commit (only deleted lines)
-    code_before=$(git diff "$parent_commit" "$commit_hash" | grep "^-[^-]" | sed 's/^-//')
+    # Get the diff of the commit, filtering by the provided file pattern (if any)
+    if [ -n "$FILE_FILTER" ]; then
+        diff=$(git diff "$parent_commit" "$commit_hash" -- "$FILE_FILTER")
+    else
+        diff=$(git diff "$parent_commit" "$commit_hash")
+    fi
 
-    # Get the diff of the commit (showing changes)
-    diff=$(git diff "$parent_commit" "$commit_hash")
+    # If the diff is empty (no changes matching the file filter), skip this commit
+    if [ -z "$diff" ]; then
+        continue
+    fi
 
+    # Get the code before the commit (only deleted lines, filtered by file if provided)
+    if [ -n "$FILE_FILTER" ]; then
+        code_before=$(git diff "$parent_commit" "$commit_hash" -- "$FILE_FILTER" | grep "^-[^-]" | sed 's/^-//')
+    else
+        code_before=$(git diff "$parent_commit" "$commit_hash" | grep "^-[^-]" | sed 's/^-//')
+    fi
+    
     # Format the output into clean JSON
     json_out=$(jq -n --arg instruction "$commit_message" --arg input "$code_before" --arg result "$diff" \
         '{
