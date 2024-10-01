@@ -41,18 +41,39 @@ while IFS= read -r commit; do
     code_before=$(git diff "$parent_commit" "$commit_hash" | grep "^-[^-]" | sed 's/^-//')
 
     # Get the diff of the commit (showing changes)
-    diff=$(git diff "$parent_commit" "$commit_hash")
+    diff=$(git diff "$parent_commit" "$commit_hash" | grep '^[+-]'| grep -v '^[+-][+-]')
 
-    # Format the output into clean JSON
-    json_out=$(jq -n --arg instruction "$commit_message" --arg input "$code_before" --arg result "$diff" \
-        '{
-            instruction: $instruction,
-            input: ($input | split("\n") | map(. | ltrimstr(" ")) | join("\n")),
-            result: $result
-        }')
+    # Get the number of lines changed in the commit
+    lines_changed=$(git diff --shortstat "$parent_commit" "$commit_hash" | awk '{print $4 + $6}')
 
-    json_array+=("$json_out")
-done < <(git log --pretty=format:'{"instruction": "%s", "commit": "%H"}' -n "$NUM_COMMITS")
+    # Only process the commit if it changes at most 5 lines
+    if [ "$lines_changed" -le 25 ]; then
+        # Get the code before the commit (only deleted lines)
+        code_before=$(git diff "$parent_commit" "$commit_hash" | grep "^-[^-]" | sed 's/^-//')
+
+        # Get the diff of the commit (showing changes)
+        diff=$(git diff "$parent_commit" "$commit_hash" | grep '^[+-]'| grep -v '^[+-][+-]')
+
+        # Format the output into clean JSON
+        json_out=$(jq -n --arg instruction "$commit_message" --arg input "$code_before" --arg result "$diff" \
+            '{
+                instruction: $instruction,
+                input: ($input | split("\n") | map(. | ltrimstr(" ")) | join("\n")),
+                result: $result
+            }')
+
+        # Add the JSON output to the array
+        json_array+=("$json_out")
+
+        # Increment the commit count
+        commit_count=$((commit_count + 1))
+
+        # Stop if we've processed the desired number of commits
+        if [ "$commit_count" -ge "$NUM_COMMITS" ]; then
+            break
+        fi
+    fi
+done < <(git log --pretty=format:'{"instruction": "%s", "commit": "%H"}')
 
 # Print the collected JSON objects, joining them with commas
 if [ ${#json_array[@]} -gt 0 ]; then
