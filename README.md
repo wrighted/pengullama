@@ -54,19 +54,71 @@ Set up proposed devleopment environment in order to train llama:
 
 Using unsloth, trained llama 3.1 8B on one "fake" data point.
 
-For more details see [this notebook](./notebooks/week_1.ipynb).
+For more details see [this notebook](./notebooks/week_1.ipynb). Which inludes
+_most_ of the necesarry set-up steps for my environment and accounts.
 
 ### Week 2
 
-Wrote a script to format git histories to conform to Aplaca prompt standard.
+Wrote a script in bash to format git repostories to conform to Aplaca prompt standard, where:
 
-For more details see [the script](./promptify.sh).
+- The commit message is the instruction,
+- Pre-commit code is the input, and
+- Git diff line changes are the result.
 
-Attempted to train llama 3.1 8B on latest 100 commits of Zephyr, but quickly
-ran out of memory when adding any more than 1 data point. Was not sucessful
-in memory minimization.
+For more details on the sctipt see [the script](./promptify.sh).
 
-Ported code to Google Colab, which provides a Tesla T4 runtime for free.
+I Attempted to train llama 3.1 8B on latest 100 commits of Zephyr, but quickly
+ran out of memory when adding any more than 1 data point on my local system. Was not sucessful
+in memory minimization by adjusting parameters and using less data.
+
+I ported code to Google Colab, which provides a Tesla T4 runtime for free!
+
 Uploaded resulting model to my [Hugging Face](https://huggingface.co/wrighted/zephllama).
 
 See [this notebook](./notebooks/week_2.ipynb) for more details.
+
+### Week 3 
+
+I wrote a Python script which downloads and computes my tained model on my local system.
+This way, I have an easy way to interact with my LLM outside of a notebook.
+
+Since my model performed poorly, I made a few changes to my input data:
+
+- No longer refernce file names, _only_ the lines of code with +/-
+- Only inlclude commits that change _at most_ 25 lines,
+- Expand to use 1000 commits, and 3 full training epochs.
+
+This took just over an hour of training on Google Colab T4, afer which
+I quickly ran out of credits. It's unclear when I will get more.
+
+After testing around with this new model, it seems much more well-rounded
+and clearly is taking to the training:
+
+```
+### Instruction:
+Bluetooth: Mesh: Fix bugs in PTS testing
+
+### Input:
+        BT_MESH_MODEL_CB(BT_MESH_MODEL_ID_BRG_CFG_SRV, bt_mesh_brg_cfg_srv_op,     \
+                         NULL, NULL, &bt_mesh_brg_cfg_srv_cb)
+                                brg_tbl_compact();
+                entry.directions = 0;
+
+### Response:
+-       BT_MESH_MODEL_CB(BT_MESH_MODEL_ID_BRG_CFG_SRV, bt_mesh_brg_cfg_srv_op,     \
+-                        NULL, NULL, &bt_mesh_brg_cfg_srv_cb)
+-                               brg_tbl_compact();
++       BT_MESH_MODEL_CB(BT_MESH_MODEL_ID_BRG_CFG_SRV, &bt_mesh_brg_cfg_srv_cb)
++               /* Do not call brg_tbl_compact() here as it is called in
++                * brg_tbl_update() when a model is added to a bridge.
++                */
+-               entry.directions = 0;
++               entry.directions = BT_MESH_BRG_DIR_NONE;<|end_of_text|>
+```
+
+You can notice the gif diff of +/- which would not be in stock LLAMA.
+
+### Week 4
+
+- Tokenize inputs
+- Indentify bug fixes?

@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore")
 
 # Parameters
 model_name = "wrighted/zephllama"
-max_seq_length = 128
+max_seq_length = 1024
 dtype = None
 load_in_4bit = True
 
@@ -18,6 +18,13 @@ parser = argparse.ArgumentParser(description="Generate text using a fine-tuned m
 parser.add_argument("instruction", type=str, help="The instruction for the model.")
 parser.add_argument("input", type=str, help="The input for the model.")
 args = parser.parse_args()
+
+# Function to replace escape characters with formatted text
+def format_input(input_text):
+    formatted_text = input_text.replace("\\n", "\n").replace("\\t", "\t")
+    return formatted_text
+
+formatted_input = format_input(args.input)
 
 # Load the model and tokenizer
 model, tokenizer = FastLanguageModel.from_pretrained(
@@ -48,7 +55,7 @@ inputs = tokenizer(
 [
     alpaca_prompt.format(
         args.instruction,
-        args.input,
+        formatted_input,
         "",
     )
 ], return_tensors = "pt").to(device_str)
