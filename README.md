@@ -54,6 +54,11 @@ Set up proposed devleopment environment in order to train llama:
 
 Using unsloth, trained llama 3.1 8B on one "fake" data point.
 
+Challenges:
+
+- Memroy usage was too high for llama 3.1 8B, so had to quantize to 4 bits.
+- One data point is obviously not enough to train a model, but all my GPU can handle.
+
 For more details see [this notebook](./notebooks/week_1.ipynb). Which inludes
 _most_ of the necesarry set-up steps for my environment and accounts.
 
@@ -130,7 +135,7 @@ Using Cregit, Professor German has tokenized the Linux and Zephyr kernels.
 I will use this data to train my model, but first I need to think about
 how to format the data.
 
-Before now, I was using the following format:
+Before now, I was using the following format (as detailed above):
 
 ```
 ### Instruction: (Commit message)
@@ -210,4 +215,12 @@ This bakes the commit message into the input data, and should allow the
 model to learn more about the relationship between the commit message and
 the code changes.
 
+Obviously, nobody wants to tokenize their code before interacting with an
+LLM, so I will need to bake this into the process somehow.
+
 The resulting dataset using this strategy is available [here](./datasets/zephyr_tokenized.json).
+
+### Week 5
+
+- Cregit for input data, maybe made into a Transformer?
+- Script for comparing different LLM interations.
