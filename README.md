@@ -120,5 +120,94 @@ You can notice the gif diff of +/- which would not be in stock LLAMA.
 
 ### Week 4
 
-- Tokenize inputs
-- Indentify bug fixes?
+Since it's clear that my model is learning, I'm choosing to focus on
+feature engineering and data cleaning. The first step in my mind is to
+use the tokenized input data to train the model. This should allow the
+model to learn more about the structure of the code, and less about line
+changes.
+
+Using Cregit, Professor German has tokenized the Linux and Zephyr kernels.
+I will use this data to train my model, but first I need to think about
+how to format the data.
+
+Before now, I was using the following format:
+
+```
+### Instruction: (Commit message)
+Bluetooth: A2DP: Fix NULL pointer references issue
+
+### Input: Code before commit
+a2dp->start_param.acp_stream_ep_id = stream->remote_ep == NULL ?
+ 		stream->remote_ep->sep.sep_info.id : stream->remote_ep_id;
+
+### Response: Code diff of commit
+-   a2dp->start_param.acp_stream_ep_id = stream->remote_ep == NULL ?
++   a2dp->start_param.acp_stream_ep_id = stream->remote_ep != NULL ?
+```
+
+Where the intruction is the commit message, the input is the code before
+the commit, and the response is the diff of the commit.
+
+But let's move to a more tokenized format:
+
+```
+### Instruction: (Commit message)
+Bluetooth: A2DP: Fix NULL pointer references issue
+
+### Input: Tokens before commit
+name|acp_stream_ep_id
+operator|=
+name|stream
+operator|->
+name|remote_ep
+operator|==
+name|NULL
+condition|?
+name|stream
+operator|->
+name|remote_ep
+
+### Response: Tokens diff of commit
+-operator|==
++operator|!=
+```
+
+This gives context to the model about exactly what is changing. Now
+adding plain english in the instruction, the model should be able to
+learn more about the fixes relationship with the commit message:
+
+```
+### Instruction:
+There is an issue in the following code. It relates to drivers: spi: litex: add missing include
+
+add missing include of `soc.h`. Please fix this issue.
+
+### Input:
+Faulty tokenized code:
+include|#
+directive|include
+file|<stdbool.h>
+end_include
+begin_comment
+comment|/* Helper Functions */
+end_comment
+begin_function
+
+### Response:
+I corrected the issue in the code by changing the following tokens:
++begin_include
++include|#
++directive|include
++file|<soc.h>
++end_include
++
+The issue was with: drivers: spi: litex: add missing include
+
+add missing include of `soc.h`.
+```
+
+This bakes the commit message into the input data, and should allow the
+model to learn more about the relationship between the commit message and
+the code changes.
+
+The resulting dataset using this strategy is available [here](./datasets/zephyr_tokenized.json).
