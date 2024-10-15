@@ -62,4 +62,4 @@ inputs = tokenizer(
 
 # Decode and print the result
 text_streamer = TextStreamer(tokenizer)
-_ = model.generate(**inputs, streamer = text_streamer, max_new_tokens = max_seq_length)
+_ = model.generate(**inputs, streamer = text_streamer, max_new_tokens = max_seq_length, num_return_sequences = 1)

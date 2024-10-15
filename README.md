@@ -1,7 +1,5 @@
 # pengullama
 
-CSC 499: Hnours Project
-
 This repository contains work completed as part of my honours project.
 
 ## Fine-tuning LLMs for Software Development Tasks
@@ -39,6 +37,19 @@ proposed solutions. By comparing its performance against other LLMs and traditio
 analysis tools, we will assess whether the fine-tuned LLM offers a tangible advantage. This
 evaluation will determine whether fine-tuned LLMs are sufficiently advanced to be considered a
 valuable asset for field deployment in software development today.
+
+## Set-up
+
+There are few requirements in order to re-produce the results of this project:
+
+- You need to have a CUDA capable GPU in order to use the LLM,
+- You need a GPU with 16GB of VRAM in order to train the LLM,
+- You need to be on a distribution of Linux for full compatability,
+- You need Python and a few installed packages via `pip` (container in progress)
+    - unsloth
+    - bitsandbytes
+    - torch
+- You need a Hugging Face account in order to access my trained models.
 
 ## Progress
 
@@ -222,5 +233,454 @@ The resulting dataset using this strategy is available [here](./datasets/zephyr_
 
 ### Week 5
 
-- Cregit for input data, maybe made into a Transformer?
-- Script for comparing different LLM interations.
+Using the dataset which was created last week, I trained _"Zephllama"_ on 
+~1000 tokenized commits. Let's take a looks at the results.
+
+#### Cregit
+
+I installed and configured cregit on both my Windows and MacOS systems,
+
+- On Ubuntu 20 you need to manually allow installing an older version of libssl
+
+The reason I could not just use my MacOS system:
+
+- `unsloth` does not support MPS backend (Apple Silicon)
+- `bitsandbytes` which is the alternative, also does not support MPS.
+
+For this reason, loading a trained model onto Apple Silicon is not yet possible.
+
+However, once properly installed, you can get output similiar to the following:
+
+```
+srcml example.cpp | srcml2token
+
+-:-     begin_unit|revision:1.0.0;language:C++;cregit-version:0.0.1
+-:-     begin_expr_stmt
+1:1     name|ret
+1:5     operator|=
+1:7     name|gpio_pin_configure
+1:25    argument_list|(
+1:26    name|dev
+1:29    argument_list|,
+1:31    name|LED_PIN
+1:38    argument_list|,
+1:40    name|GPIO_INPUT
+1:50    argument_list|)
+1:51    expr_stmt|;
+-:-     end_expr_stmt
+-:-     begin_if_stmt
+2:1     if|if
+2:4     condition|(
+2:5     name|ret
+2:9     operator|!=
+2:12    literal|0
+2:13    condition|)
+2:15    block|{
+3:3     name|printk
+3:9     argument_list|(
+3:10    literal|"Failed to configure pin %d\n"
+3:40    argument_list|,
+3:42    name|LED_PIN
+3:49    argument_list|)
+3:50    expr_stmt|;
+4:3     return|return;
+5:1     block|}
+-:-     end_if_stmt
+-:-     end_unit
+```
+
+#### Preparing an example bug
+
+In this example, `example.cpp` is a snippet of code:
+
+```
+ret = gpio_pin_configure(dev, LED_PIN, GPIO_INPUT);
+if (ret != 0) {
+  printk("Failed to configure pin %d\n", LED_PIN);
+  return;
+}
+```
+
+Which mimics Zephyr code, with one error:
+
+- `GPIO_INPUT` should be `GPIO_OUTPUT`
+
+Since I made this up, it should not be in the training data.
+
+#### Preparing ask.py to handle tokenized code
+
+By using the existing script in the following way:
+
+
+     python ask.py "There is an error in the following code related to GPIO_INPUT" "Here is the faulty code: \n$(cat example.txt)"
+
+We are matching the format of the model which was trained on ~1000 tokenized commits from Zephyr.
+
+#### The response
+
+After numerous tries with this model, I've seen 2 different responses.
+
+NOTE: I removed line and column numbers for now.
+
+```
+<|begin_of_text|>Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+
+### Instruction:
+There is an error in the following code related to GPIO_INPUT
+
+### Input:
+Here is the faulty code:
+begin_unit|revision:1.0.0;language:C++;cregit-version:0.0.1
+begin_expr_stmt
+name|ret
+operator|=
+name|gpio_pin_configure
+argument_list|(
+name|dev
+argument_list|,
+name|LED_PIN
+argument_list|,
+name|GPIO_INPUT
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|ret
+operator|!=
+literal|0
+condition|)
+block|{
+name|printk
+argument_list|(
+literal|"Failed to configure pin %d
+"
+argument_list|,
+name|LED_PIN
+argument_list|)
+expr_stmt|;
+return|return;
+block|}
+end_if_stmt
+end_unit
+
+### Response:
+The error in the code was with: GPIO_INPUT
+
+The correct code:
+begin_unit|revision:1.0.0;language:C++;cregit-version:0.0.1
+begin_expr_stmt
+name|ret
+operator|=
+name|gpio_pin_configure
+argument_list|(
+name|dev
+argument_list|,
+name|LED_PIN
+argument_list|,
+name|GPIO_OUTPUT
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|ret
+operator|!=
+literal|0
+condition|)
+block|{
+name|printk
+argument_list|(
+literal
+```
+
+Or
+
+```
+### Response:
+I corrected the error in the code by changing the following tokens:
+-name|GPIO_INPUT
++name|GPIO_OUTPUT
+The error was with: GPIO_INPUT
+```
+
+I also want to make sure I'm not giving it the answer, so let's change
+the prompt around a few times:
+
+```
+### Instruction:
+There is an error in the following code where my LED iisn't lighting up
+
+...
+
+### Response:
+I corrected the error in the code by changing the following tokens:
+-name|GPIO_INPUT
++name|GPIO_OUTPUT
+The error was with: There is an error in the following code where my LED iisn't lighting up
+```
+
+```
+### Instruction:
+There is an error in the following, please fix the issue
+
+### Input:
+Here is the faulty tokenized code:
+...
+
+### Response:
+I corrected the issue in the code by changing the following tokens:
++begin_comment
++comment|/* CONFIG_GPIO_PINTYPE_OUTPUT */
++end_comment
++
+-name|GPIO_INPUT
++name|GPIO_OUTPUT
+The issue was with: syntax: error: missing expression
+
+begin_unit|revision:1.0.0;language:C++;cregit-version:0.0.1
+begin_expr_stmt
+name|ret
+operator|=
+name|gpio_pin_configure
+argument_list|(
+name|dev
+argument_list|,
+name|LED_PIN
+argument_list|,
+name|GPIO_INPUT
+argument_list|)
+```
+
+We can see a few exciting things here:
+
+- Zephllama responded in the tokenized output it was trained to,
+- It fixed the actual bug in all my tests,
+- It not only fixed the bug, but sometimes gave full context as well.
+
+It's clear that this model learned better than the last, but it's
+not perfect.
+
+A few improvements for this model would be:
+
+- If the model is producing a diff, it should include some context of
+where that diff goes in the original code. 
+- The output should be in a de-tokenized, readable format,
+- The tokenization should take place in my script.
+
+#### Moving forward
+
+The prompt style should change again to follow:
+
+Instruction: Describe code format, as much problem context as possible, and a fix format.
+
+Input: The faulty code snippet.
+
+Result: Describe a more specific solution statement, give full code context with the fix.
+
+Since the tokenization can improve our learning, the pipeline might look something like:
+
+Intruction:
+
+- Pad with code formatting and response desires (ex. give me the fix in context).
+
+Input:
+
+- Run `srcml2token` on passed code
+
+Result:
+
+- Feature engineering: error location
+    - Using `git diff` input `<START_ERROR>` `<END_ERROR>` tokens
+- Feature engineering: error resolution
+    - In between special tokens, make the fix
+- Output readable code, requires an `undo-srcml2token`, or can be machine learned.
+
+Let's take a look at how our example would look as training data:
+
+```
+I'm having trouble turning on the LED. What's wrong in my code?
+
+ret = gpio_pin_configure(dev, LED_PIN, GPIO_INPUT);
+if (ret != 0) {
+  printk("Failed to configure pin %d\n", LED_PIN);
+  return;
+}
+```
+
+Converted to look like our training data:
+
+```
+### Instruction:
+I'm having trouble turning on the LED. What's wrong in my code? Please fix the issue.
+
+### Input:
+Here is the faulty code:
+
+ret = gpio_pin_configure(dev, LED_PIN, GPIO_INPUT);
+if (ret != 0) {
+  printk("Failed to configure pin %d\n", LED_PIN);
+  return;
+}
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_unit|language:C++
+begin_expr_stmt
+name|ret
+operator|=
+name|gpio_pin_configure
+argument_list|(
+name|dev
+argument_list|,
+name|LED_PIN
+argument_list|,
+name|GPIO_INPUT
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|ret
+operator|!=
+literal|0
+condition|)
+block|{
+name|printk
+argument_list|(
+literal|"Failed to configure pin %d"
+argument_list|,
+name|LED_PIN
+argument_list|)
+expr_stmt|;
+return|return;
+block|}
+end_if_stmt
+end_unit
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR>
+before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_unit|language:C++
+begin_expr_stmt
+name|ret
+operator|=
+name|gpio_pin_configure
+argument_list|(
+name|dev
+argument_list|,
+name|LED_PIN
+argument_list|,
+<START_ERROR>
+name|GPIO_INPUT
+<END_ERROR>
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|ret
+operator|!=
+literal|0
+condition|)
+block|{
+name|printk
+argument_list|(
+literal|"Failed to configure pin %d"
+argument_list|,
+name|LED_PIN
+argument_list|)
+expr_stmt|;
+return|return;
+block|}
+end_if_stmt
+end_unit
+
+### Error correction:
+Here is the code with the issue corrected:
+
+begin_unit|language:C++
+begin_expr_stmt
+name|ret
+operator|=
+name|gpio_pin_configure
+argument_list|(
+name|dev
+argument_list|,
+name|LED_PIN
+argument_list|,
+name|GPIO_OUTPUT
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|ret
+operator|!=
+literal|0
+condition|)
+block|{
+name|printk
+argument_list|(
+literal|"Failed to configure pin %d"
+argument_list|,
+name|LED_PIN
+argument_list|)
+expr_stmt|;
+return|return;
+block|}
+end_if_stmt
+end_unit
+
+### Response:
+I have identified the issue in the code you provided:
+
+// This is where the error is
+ret = gpio_pin_configure(dev, LED_PIN, GPIO_INPUT);
+if (ret != 0) {
+  printk("Failed to configure pin %d\n", LED_PIN);
+  return;
+}
+
+The issue is with the GPIO_INPUT name, here is the
+the code with this issue corrected:
+
+// Corrcted the error
+ret = gpio_pin_configure(dev, LED_PIN, GPIO_OUTPUT);
+if (ret != 0) {
+  printk("Failed to configure pin %d\n", LED_PIN);
+  return;
+}
+```
+
+So, generalazing to Zephyr, let's try a full machine learning approach:
+
+- Micro commits,
+- That mention "fix", "bug", "correct", etc.
+- Tranformed into above format where
+    - Code is tokenized
+    - The special "error tokens" are inserted based on git diff
+    - Tokenized fix is generated
+    - Original code snippet with comment inserted
+    - Fixed code snippet with comment inserted
+
+Using a combination of:
+
+- Original repository
+- Repository which has been "cregit-ified"
+- srcml2token
+
+This should be possible for both Zephyr and Linux kernels.
+
+This combines everything this project has learned thus far into one model.
+
+### Week 6
+
+Accomplish & train Zephllama as described above.
