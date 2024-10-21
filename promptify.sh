@@ -10,84 +10,136 @@ commit_count=0
 
 # Escape double quotes and handle newlines in commit messages
 clean_commit_message() {
-    # Replace newlines with \n using sed
-    echo "$1" | sed ':a;N;$!ba;s/\n/\\n/g' |
-    # Escape double quotes
-    sed -e 's/"/\\"/g' |
-    # Remove 'Signed-off-by' and 'Former-commit-id' lines
-    sed -e '/Signed-off-by/d' -e '/Former-commit-id/d'
+    echo "$1" | sed -e '/Signed-off-by/d' -e '/Former-commit-id/d'
 }
 
+# Remove metadata from git diffs
 clean_git_diff() {
     echo "$1" | grep -vE '^(diff --git|index|---|\+\+\+|@@)'
 }
 
-# Iterate through the specified number of commits and output the JSON format
+tokenize() {
+    temp_file=$(mktemp --suffix=".cpp")
+
+    # Safely write the input to the temporary file, preserving newlines and special characters
+    printf "%s" "$1" > "$temp_file"
+
+    # Run srcml on the temporary file, pipe to srcml2token, and extract the second column using awk
+    srcml "$temp_file" | srcml2token | awk '{ print $2 }'
+
+    # Clean up temporary file
+    rm "$temp_file"
+}
+
+# Function to wrap changed tokens using diff
+wrap_changed_tokens() {
+    local before="$1"
+    local after="$2"
+    output=()
+
+    IFS=$'\n' read -r -d '' -a before_array <<< "$before"
+    IFS=$'\n' read -r -d '' -a after_array <<< "$after"
+
+    before_length=${#before_array[@]}
+    after_length=${#after_array[@]}
+    max_length=$(( $before_length > $after_length ? $before_length : $after_length ))
+
+    # First pass: Find <START_ERROR>
+    for ((i=0; i<before_length; i++)); do
+        before_token=${before_array[i]}
+        after_token=${after_array[i]}
+
+        if [[ "$before_token" != "$after_token" ]]; then
+            break
+        fi
+    done
+
+    # Second pass: Find <END_ERROR>
+    for ((j=1; j<before_length; j++)); do
+        after_token=${after_array[after_length - j]}
+        before_token=${before_array[before_length - j]}
+
+        if [[ "$before_token" != "$after_token" ]]; then
+            break
+        fi
+    done
+
+    # Add remaining after tokens, if any
+    for ((k=0; k<before_length; k++)); do
+        if [[ k -eq i ]]; then
+            output+=("<START_ERROR>")
+        fi
+
+        output+=("${before_array[k]}")
+
+        if [[ k -eq $((before_length - j)) ]]; then
+            output+=("<END_ERROR>")
+        fi
+    done
+
+    printf "%s\n" "${output[@]}"
+}
+
+# Iterate through the specified number of commits and output JSON
 while IFS= read -r commit_hash; do
-    # Extract the commit message
     commit_message=$(git log -1 --pretty=format:'%B' "$commit_hash")
 
-    # Skip if the commit hash or message is empty or invalid
     if [ -z "$commit_hash" ] || [ -z "$commit_message" ]; then
         continue
     fi
 
-    # Get the previous commit hash
     parent_commit=$(git rev-list --parents -n 1 "$commit_hash" | cut -d' ' -f2)
-
-    # Skip if the parent commit is empty (e.g., for the initial commit)
     if [ -z "$parent_commit" ]; then
         continue
     fi
 
-    # Get the number of lines changed in the commit
-    lines_changed=$(git diff --shortstat "$parent_commit" "$commit_hash" | awk '{print $4 + $6}')
-
-    # If there are no changed files that match the mask, skip this commit
-    if [ "$lines_changed" -gt 25 ]; then
+    changed_files_count=$(git diff --name-only "$parent_commit" "$commit_hash" | wc -l)
+    if [ "$changed_files_count" -ne 1 ]; then
         continue
     fi
 
-    # Get the code with context (5 lines before and after changes)
-    code_with_context=$(git diff -U5 "$parent_commit" "$commit_hash")
+    lines_changed=$(git diff --shortstat "$parent_commit" "$commit_hash" | awk '{print $4 + $6}')
+    if [ "$lines_changed" -gt 5 ]; then
+        continue
+    fi
 
-    # Filter out metadata lines: diff --git, index, ---, +++, @@
-    filtered_before=$(clean_git_diff "$code_with_context")
+    diff=$(git diff -U3 "$parent_commit" "$commit_hash")
+    clean_diff=$(clean_git_diff "$diff")
 
-    # Exclude added lines (+), keeping only the context and deleted lines (-)
-    code_before=$(echo "$filtered_before" | grep -v '^+' | sed 's/^-//')
+    code_before=$(echo "$clean_diff" | grep -v '^+' | sed 's/^-//')
+    code_after=$(echo "$clean_diff" | grep -v '^-' | sed 's/^+//')
 
-    # Get the diff of the commit (showing changes)
-    diff=$(git diff "$parent_commit" "$commit_hash" -- | grep '^[+-]' | grep -v '^[+-][+-]')
+    code_before_tokens=$(tokenize "$code_before")
+    code_after_tokens=$(tokenize "$code_after")
 
-    # Filter out metadata lines: diff --git, index, ---, +++, @@
-    filtered_diff=$(clean_git_diff "$diff")
+    wrapped_after_tokens=$(wrap_changed_tokens "$code_before_tokens" "$code_after_tokens")
 
-    # Sanitize commit_message to escape any problematic characters
     sanitized_commit_message=$(clean_commit_message "$commit_message")
 
-    # Format the output into clean JSON
-    json_out=$(jq -n --arg instruction "$sanitized_commit_message" --arg input "$code_before" --arg result "$filtered_diff" \
+    json_out=$(jq -n --arg instruction "$sanitized_commit_message" \
+                     --arg input "$code_before" \
+                     --arg tokenized "$code_before_tokens" \
+                     --arg location "$wrapped_after_tokens" \
+                     --arg fixed "$code_after_tokens" \
+                     --arg result "$code_after" \
         '{
-            instruction: ("There is an issue in the following code. It relates to " + $instruction + " Please fix this issue."),
-            input: ("Faulty tokenized code:\n" + ($input | split("\n") | map(. | ltrimstr(" ")) | join("\n"))),
-            result: ("I corrected the issue in the code by changing the following tokens:\n" + ($result | split("\n") | map(. | ltrimstr(" ")) | join("\n")) + "\nThe issue was with: " + $instruction)
+            instruction: ("I am having trouble with the following code in relation to " + $instruction + ". What''s wrong? Please fix this issue."),
+            input: ("Here is the faulty code:\n\n" + ($input | split("\n") | map(. | ltrimstr(" ")) | join("\n"))),
+            tokenized: ("Here is the faulty code which has been tokenized:\n\n" + ($tokenized | split("\n") | map(. | ltrimstr(" ")) | join("\n"))),
+            error_location: ("I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:\n\n" + ($location | split("\n") | map(. | ltrimstr(" ")) | join("\n"))),
+            error_correction: ("Here is the tokenized code with the issue corrected:\n\n" + ($fixed | split("\n") | map(. | ltrimstr(" ")) | join("\n"))),
+            response: ("I corrected the issue in the code you provided:\n\n" + ($input | split("\n") | map(. | ltrimstr(" ")) | join("\n")) + "\nThe issue was with: " + $instruction + ". Here is the corrected version:\n\n" + ($result | split("\n") | map(. | ltrimstr(" ")) | join("\n")))
         }')
 
-    # Add the JSON output to the array
     json_array+=("$json_out")
-
-    # Increment the commit count
     commit_count=$((commit_count + 1))
 
-    # Stop if we've processed the desired number of commits
     if [ "$commit_count" -ge "$NUM_COMMITS" ]; then
         break
     fi
 
 done < <(git log --pretty=format:'%H' -n "$NUM_COMMITS" -- "$FILE_MASK")
 
-# Print the collected JSON objects, joining them with commas
 if [ ${#json_array[@]} -gt 0 ]; then
     printf '[%s]\n' "$(IFS=,; echo "${json_array[*]}")"
 else
