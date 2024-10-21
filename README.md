@@ -683,4 +683,8 @@ This combines everything this project has learned thus far into one model.
 
 ### Week 6
 
-Accomplish & train Zephllama as described above.
+- I updated the `promptify.sh` script to include the new format for tokenized code utilizing `srcml2token`.
+- I have created a new dataset using the above format, which is available [here](./datasets/zephyr_locations.json).
+- I wrote a Python script which displays the the prompts as showed above, and can be found [here](./show.py).
+- I attempted to train a new model on this dataset, but ran out of credits on Google Colab.
+- By using a new account I should be able to train the model and evaluate it.
