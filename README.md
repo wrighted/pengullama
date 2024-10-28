@@ -688,3 +688,186 @@ This combines everything this project has learned thus far into one model.
 - I wrote a Python script which displays the the prompts as showed above, and can be found [here](./show.py).
 - I attempted to train a new model on this dataset, but ran out of credits on Google Colab.
 - By using a new account I should be able to train the model and evaluate it.
+
+### Week 7
+
+New full machine learning approach has been trained. Let's see how it does.
+
+#### Initial results
+
+```
+### Instruction:
+Can you fix the issue in this python code, i think the problem is in logging in
+
+### Input:
+def login():
+        return True
+
+### Tokenized:
+Here is the tokenized version of the input:
+
+begin_unit|revision:1.0.0;language:C++;cregit-version:0.0.1
+begin_function
+name|login
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+return|return
+literal|True
+return|;
+block|}
+end_function
+end_unit
+```
+
+Obviously I gave a model trained on C++ a Python snippet, but the model
+actually did a really good job at tokenizing an input it has deifnitely never
+seen before.
+
+Let's see how it does on some actual C++ code. I'm starting with a
+fairly trivial error based on kernel style code:
+
+```
+### Instruction:
+Can you fix the issue in my code, I think the problem is in the sensor loop.
+
+### Input:
+Here is the faulty code:
+
+void sensor_reading_thread(void)
+{
+    int temperature = -1;
+
+    while (temperature >= 0) {
+        // Reading temperature
+        temperature = read_sensor();
+
+        // Sleep for 1 second
+        k_sleep(K_SECONDS(1));
+    }
+}
+
+...
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+...
+while|while
+condition|(
+name|temperature
+<START_ERROR>
+operator|>
+literal|0
+<END_ERROR>
+condition|)
+block|{
+...
+```
+
+I've truncated this, but this shows that the model was able to indentify
+the while condition is likely the issue here (which I agree with).
+
+It was not able to successfully fix this issue however.
+
+Another example:
+
+```
+### Instruction:
+I'm having issues in the following code in relation to the LED handle. What's wrong? Please fix the issue
+
+### Input:
+Here is the faulty code:
+
+void toggle_led()
+{
+    const struct device *dev = device_get_binding("GPIO_0");
+    if (!dev) {
+        printk("Failed to bind to GPIO device");
+        return;
+    }
+
+    gpio_pin_configure(dev, LED_PIN, GPIO_OUTPUT);
+
+    while (true) {
+        gpio_pin_toggle(dev, LED_PIN);
+        k_sleep(K_MSEC(SLEEP_TIME_MS));
+    }
+}
+K_THREAD_DEFINE(led_thread_id, 1024, toggle_led, NULL, NULL, NULL, 7, 0, 0);
+
+...
+
+### Response:
+The issue was with: the LED handle. What was the issue? Here is the corrected version:
+
+void toggle_led()
+{
+    const struct device *dev = device_get_binding("GPIO_0");
+    if (\!dev) {
+        printk("Failed to bind to GPIO device");
+        return;
+    }
+
+    if (dev == NULL) {
+        printk("Failed to get device");
+        return;
+    }
+
+    gpio_pin_configure(dev, LED_PIN, GPIO_OUTPUT);
+
+    while (true) {
+        gpio_pin_toggle(dev, LED_PIN);
+        k_sleep(K_MSEC(SLEEP_TIME_MS));
+    }
+}
+K_THREAD_DEFINE(led_thread_id, 1024, toggle_led, NULL, NULL, NULL, 7, 0, 0);<|end_of_text|>
+```
+
+#### Tokenization
+
+Let's analyze how good llama actually was at tokenizing.
+
+Diff of srcml2token vs llama for following code:
+
+```
+void toggle_led()
+{
+    const struct device *dev = device_get_binding("GPIO_0");
+    if (!dev) {
+        printk("Failed to bind to GPIO device");
+        return;
+    }
+
+    gpio_pin_configure(dev, LED_PIN, GPIO_OUTPUT);
+
+    while (true) {
+        gpio_pin_toggle(dev, LED_PIN);
+        k_sleep(K_MSEC(SLEEP_TIME_MS));
+    }
+}
+K_THREAD_DEFINE(led_thread_id, 1024, toggle_led, NULL, NULL, NULL, 7, 0, 0);
+```
+
+```
+61,63d60
+< block|}
+< end_function
+< begin_expr_stmt
+85c82
+< end_expr_stmt
+---
+> end_function
+```
+
+Basically, llama missed the `begin_expr_stmt` at the end, it's possible it never saw this in training.
+
+All things considered I'm impressed how well llama was at tokenizing.
+
+#### Opinion
+
+While llama learned tokenizing very well, and it's fairly good at recognizing the error
+location, it's proposed fixes are nothing special.
+
+Next week this will be the focus of improvement.

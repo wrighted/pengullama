@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore")
 
 # Parameters
 model_name = "wrighted/zephllama"
-max_seq_length = 1024
+max_seq_length = 2048
 dtype = None
 load_in_4bit = True
 
@@ -40,15 +40,17 @@ device_str = "cuda" if torch.cuda.is_available() else "cpu"
 device = torch.device(device_str)
 model.to(device)
 
-alpaca_prompt = """Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+alpaca_prompt = """Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
 
 ### Instruction:
 {}
 
 ### Input:
+Here is the faulty code:
+
 {}
 
-### Response:
+### Tokenized:
 {}"""
 
 inputs = tokenizer(
@@ -56,10 +58,15 @@ inputs = tokenizer(
     alpaca_prompt.format(
         args.instruction,
         formatted_input,
-        "",
+        ""
     )
 ], return_tensors = "pt").to(device_str)
 
 # Decode and print the result
 text_streamer = TextStreamer(tokenizer)
-_ = model.generate(**inputs, streamer = text_streamer, max_new_tokens = max_seq_length, num_return_sequences = 1)
+_ = model.generate(
+        **inputs, 
+        streamer = text_streamer, 
+        max_new_tokens = max_seq_length, 
+        num_return_sequences = 1
+    )
