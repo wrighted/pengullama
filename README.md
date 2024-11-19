@@ -2,6 +2,53 @@
 
 This repository contains work completed as part of my honours project.
 
+## Usage
+
+There are a few usfule scripts included in this repository.
+
+### Promptify
+
+`promptify` is a bash script which will turn a git repository into training data
+suitable for an LLM of your choice. Read further below for its justification,
+but generally use the script in any git repository:
+
+     ./promptify.sh <num_commits> <file_mask> <evaluation_commits> <max_tokens> > <output_file>
+
+Where:
+
+- `<num_commits>` is the number of training points to extract (reverse chronologically),
+- `<file_mask>` is a file mask to apply to the commit search (ex. `.[ch]`),
+- `<evaluation_commits>` is the number of commits to exclude from training output and instead save for testing later,
+- `<max_tokens>` is the maximum token to allow in training data,
+- `<output_file>` is the file to store the training data as JSON.
+
+### Ask
+
+`ask` is a python script which can ask a LLM saved in HuggingFace a question. It is intended to be used
+on models which follow an Alpaca prompt style. It can be used as follows:
+
+     python3 ask.py <instruction> <input>
+
+Where:
+
+- `<instruction>` is the instrcution of your desired prompt,
+- `<input>` is the input (usually code) of your desired prompt.
+
+It will output the LLMs generated response to `stdout`.
+
+NOTE: The target model can be changes within the script.
+
+### Show
+
+`show` is a python script which will take training JSON data and display it in a readable format.
+It can be used as follows:
+
+     python3 show.py <json_file>
+
+Where:
+
+- `<json_file>` is a properly formatted JSON file.
+
 ## Fine-tuning LLMs for Software Development Tasks
 
 ### Training LLMs
@@ -870,4 +917,281 @@ All things considered I'm impressed how well llama was at tokenizing.
 While llama learned tokenizing very well, and it's fairly good at recognizing the error
 location, it's proposed fixes are nothing special.
 
-Next week this will be the focus of improvement.
+### Week 8
+
+Started report, investigated evaluation strategy
+
+### Week 9
+
+Added draft report to this repository. See [the report]() for progress there.
+
+Updated `promptify.sh` structure to target the follwoing commits:
+
+Commits which:
+- Only change one file,
+- Only have a full context length of 40 tokens,
+- Match the file mask (ex. `.c` or `.h`)
+- Commit message contains a bug-related word (ex. "bug" "fix" "error" "issue" "patch", etc.)
+
+It also now excludes a number of random commits which are saved
+to a different file to be used as evaluation commits. The random
+selection uses a `shuf` command to remove any bias of me choosing the
+commits.
+
+I also added some usage instuctions for all scripts in this README.
+
+See [the training set](./datasets/zephyr_filtered.json) and the [evaluation set](./datasets/zephyr_filtered_eval.json).
+
+Using the new and more specific dataset, I did a quick training run on codeLLAMA
+which is a model tuned specifically for code. I thought it may yield better results.
+
+The results
+
+```
+### Error correction:
+Here is the faulty code:
+
+Here is the faulty code:
+
+                                end_of_send = 0;
+                                continue;
+                        } else {
+                                memcpy(send_buf + end_of_send,
+                                        data + end_of_data,
+                                        remaining_len);
+                                end_of_send += remaining_len;
+                                remaining_len = 0;
+                        }
+
+### Error explanation:
+Here is the faulty code:
+
+Here is the faulty code:
+
+                                end_of_send = 0;
+                                continue;
+                        } else {
+                                strncpy(send_buf + end_of_send,
+                                        data + end_of_data,
+                                        remaining_len);
+                                end_of_send += remaining_len;
+```
+
+We can see that this is not even picking up the tokenization, nor 
+giving meaningful output. It's possible I would need to re-egineer my
+prompt design to allow this model to learn anything from my data. For this
+reason I am going to be focusing on LLAMA 3.x from now on instead.
+
+Using the same dataset on LLAMA 3.2 3B:
+
+```
+### Input:
+Here is the faulty code:
+
+
+                                end_of_send = 0;
+                                continue;
+                        } else {
+                                strncpy(send_buf + end_of_send,
+                                        data + end_of_data,
+                                        remaining_len);
+                                end_of_send += remaining_len;
+                                remaining_len = 0;
+                        }
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|end_of_send
+operator|=
+literal|0
+operator|;
+end_expr_stmt
+begin_expr_stmt
+name|continue
+end_expr_stmt
+begin_if_stmt
+if|else
+condition|(
+name|end_of_send
+operator|!=
+name|end_of_data
+condition|)
+block|{
+name|strncpy
+argument_list|(
+name|send_buf
+operator|+
+name|end_of_send
+argument_list|,
+name|data
+operator|+
+name|end_of_data
+argument_list|,
+name|remaining_len
+argument_list|)
+name|end_of_send
+operator|+
+name|remaining_len
+operator|=
+literal|0
+block|;
+end_if_stmt
+begin_expr_stmt
+name|end_of_send
+operator|+
+name|remaining_len
+operator|=
+literal|0
+end_expr_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|end_of_send
+operator|=
+literal|0
+operator|;
+end_expr_stmt
+<START_ERROR>
+begin_expr_stmt
+name|continue
+end_expr_stmt
+begin_if_stmt
+if|else
+condition|(
+name|end_of_send
+operator|!=
+name|end_of_data
+condition|)
+block|{
+name|strncpy
+argument_list|(
+name|send_buf
+operator|+
+name|end_of_send
+argument_list|,
+name|data
+operator|+
+name|end_of_data
+argument_list|,
+name|remaining_len
+argument_list|)
+name|end_of_send
+operator|+
+name|remaining_len
+operator|=
+literal|0
+block|;
+end_if_stmt
+<END_ERROR>
+begin_expr_stmt
+name|end_of_send
+operator|+
+name|remaining_len
+operator|=
+literal|0
+end_expr_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|end_of_send
+operator|=
+literal|0
+operator|;
+end_expr_stmt
+begin_expr_stmt
+name|continue
+end_expr_stmt
+begin_if_stmt
+if|else
+condition|(
+name|end_of_send
+operator|!=
+name|end_of_data
+condition|)
+block|{
+name|memcpy
+argument_list|(
+name|send_buf
+operator|+
+name|end_of_send
+argument_list|,
+name|data
+operator|+
+name|end_of_data
+argument_list|,
+name|remaining_len
+argument_list|)
+name|end_of_send
+operator|+
+name|remaining_len
+operator|=
+literal|0
+block|;
+end_if_stmt
+begin_expr_stmt
+name|end_of_send
+operator|+
+name|remaining_len
+operator|=
+literal|0
+end_expr_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+...
+
+Here is the faulty code:
+
+                                end_of_send = 0;
+                                continue;
+                        } else {
+                                strncpy(send_buf + end_of_send,
+                                        data + end_of_data,
+                                        remaining_len);
+                                end_of_send += remaining_len;
+                                remaining_len = 0;
+                        }
+
+...
+
+Here is the faulty code which has been corrected:
+
+                                end_of_send = 0;
+                                continue;
+                        } else {
+                                memcpy(send_buf + end_of_send,
+                                        data + end_of_data,
+                                        remaining_len);
+                                end_of_send += remaining_len;
+                                remaining_len = 0;
+                        }<|end_of_text|>
+```
+
+This looks a lot better, let's put it through the evaluation.
+
+```
+- 🟨 Did it tokenize the code correctly?
+
+While the diff will show some variance, the LLM inferred the
+if condition to write a more complete tokenization. The general
+structure of the tokens looks reasonable.
+
+- 🟨 Did it place the `<START_ERROR>` `<END_ERROR>` tokens around issue?
+
+It did place the tokens around the error, but not as specifically as it could have.
+
+- ✅ Did it apply a fix which is similiar to the expected result?
+
+The fix is the same as the expected results.
+
+- ❌ Did it give a meaningful explanation about the change?
+
+This is not yet baked into training data.
+```
