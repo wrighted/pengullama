@@ -921,9 +921,9 @@ location, it's proposed fixes are nothing special.
 
 Started report, investigated evaluation strategy
 
-### Week 9
+### Week 9/10
 
-Added draft report to this repository. See [the report]() for progress there.
+Added draft report to this repository. See [the report](./CSC499_Report.docx) for progress there.
 
 Updated `promptify.sh` structure to target the follwoing commits:
 
@@ -1176,7 +1176,6 @@ Here is the faulty code which has been corrected:
 
 This looks a lot better, let's put it through the evaluation.
 
-```
 - 🟨 Did it tokenize the code correctly?
 
 While the diff will show some variance, the LLM inferred the
@@ -1194,4 +1193,3 @@ The fix is the same as the expected results.
 - ❌ Did it give a meaningful explanation about the change?
 
 This is not yet baked into training data.
-```
