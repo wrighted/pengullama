@@ -1,0 +1,171 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/d1504ff66fe6e50529c3dcb58272e4003cb39108
+
+### Instruction:
+I am having trouble with the following code in relation to mcumgr: fix few mismatched CONTAINER_OF. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	if (ret != 0) {
+#ifdef CONFIG_MCUMGR_SMP_SUPPORT_ORIGINAL_PROTOCOL
+		struct cbor_nb_writer *container = CONTAINER_OF(zse, struct cbor_nb_writer, zs);
+
+		container->error_group = group;
+		container->error_ret = ret;
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_if_stmt
+if|if
+condition|(
+name|ret
+operator|!=
+literal|0
+condition|)
+block|{
+ifdef|#
+directive|ifdef
+name|CONFIG_MCUMGR_SMP_SUPPORT_ORIGINAL_PROTOCOL
+name|struct
+name|cbor_nb_writer
+modifier|*
+name|container
+init|=
+name|CONTAINER_OF
+argument_list|(
+name|zse
+argument_list|,
+expr|struct
+name|cbor_nb_writer
+argument_list|,
+name|zs
+argument_list|)
+decl_stmt|;
+name|container
+operator|->
+name|error_group
+operator|=
+name|group
+expr_stmt|;
+name|container
+operator|->
+name|error_ret
+operator|=
+name|ret
+expr_stmt|;
+end_if_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_if_stmt
+if|if
+condition|(
+name|ret
+operator|!=
+literal|0
+condition|)
+block|{
+ifdef|#
+directive|ifdef
+name|CONFIG_MCUMGR_SMP_SUPPORT_ORIGINAL_PROTOCOL
+name|struct
+name|cbor_nb_writer
+modifier|*
+name|container
+init|=
+name|CONTAINER_OF
+argument_list|(
+name|zse
+argument_list|,
+expr|struct
+name|cbor_nb_writer
+argument_list|,
+name|zs
+<END_ERROR>
+<START_ERROR>
+argument_list|)
+decl_stmt|;
+name|container
+operator|->
+name|error_group
+operator|=
+name|group
+expr_stmt|;
+name|container
+operator|->
+name|error_ret
+operator|=
+name|ret
+expr_stmt|;
+end_if_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_if_stmt
+if|if
+condition|(
+name|ret
+operator|!=
+literal|0
+condition|)
+block|{
+ifdef|#
+directive|ifdef
+name|CONFIG_MCUMGR_SMP_SUPPORT_ORIGINAL_PROTOCOL
+name|struct
+name|cbor_nb_writer
+modifier|*
+name|container
+init|=
+name|CONTAINER_OF
+argument_list|(
+name|zse
+argument_list|,
+expr|struct
+name|cbor_nb_writer
+argument_list|,
+name|zs
+index|[
+literal|0
+index|]
+argument_list|)
+decl_stmt|;
+name|container
+operator|->
+name|error_group
+operator|=
+name|group
+expr_stmt|;
+name|container
+operator|->
+name|error_ret
+operator|=
+name|ret
+expr_stmt|;
+end_if_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	if (ret != 0) {
+#ifdef CONFIG_MCUMGR_SMP_SUPPORT_ORIGINAL_PROTOCOL
+		struct cbor_nb_writer *container = CONTAINER_OF(zse, struct cbor_nb_writer, zs);
+
+		container->error_group = group;
+		container->error_ret = ret;
+The issue was with: mcumgr: fix few mismatched CONTAINER_OF
+
+Fix a missing first element reference in a CONTAINER_OF.. Here is the corrected version:
+
+
+	if (ret != 0) {
+#ifdef CONFIG_MCUMGR_SMP_SUPPORT_ORIGINAL_PROTOCOL
+		struct cbor_nb_writer *container = CONTAINER_OF(zse, struct cbor_nb_writer, zs[0]);
+
+		container->error_group = group;
+		container->error_ret = ret;

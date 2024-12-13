@@ -1193,3 +1193,16 @@ The fix is the same as the expected results.
 - ❌ Did it give a meaningful explanation about the change?
 
 This is not yet baked into training data.
+
+### Week 11
+
+Done:
+
+Made `evaluate.py`,
+moved full commit message to result,
+
+Next up:
+
+Try new model with only tokenized
+Maybe custom tokenizer if possible
+Mass evaluation

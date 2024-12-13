@@ -1,0 +1,176 @@
+P,PPP,P,P
+LCE
+Added a functionally equivalent error message.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to samples: Bluetooth: Unicast client missing err check on sem. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	for (size_t i = 0U; i < configured_stream_count; i++) {
+		printk("QoS: waiting for %zu streams\n", configured_stream_count);
+		k_sem_take(&sem_stream_qos, K_FOREVER);
+	}
+
+	return 0;
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_for
+for|for
+control|(
+name|size_t
+name|i
+init|=
+literal|0U
+init|;
+name|i
+operator|<
+name|configured_stream_count
+condition|;
+name|i
+operator|++
+control|)
+block|{
+name|printk
+argument_list|(
+literal|"QoS:
+argument_list|,
+name|configured_stream_count
+argument_list|)
+expr_stmt|;
+name|k_sem_take
+argument_list|(
+operator|&
+name|sem_stream_qos
+argument_list|,
+name|K_FOREVER
+argument_list|)
+expr_stmt|;
+block|}
+end_for
+begin_return
+return|return
+literal|0
+return|;
+end_return
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_for
+for|for
+control|(
+name|size_t
+name|i
+init|=
+literal|0U
+init|;
+name|i
+operator|<
+name|configured_stream_count
+condition|;
+name|i
+operator|++
+control|)
+block|{
+name|printk
+argument_list|(
+literal|"QoS:
+argument_list|,
+name|configured_stream_count
+argument_list|)
+expr_stmt|;
+name|k_sem_take
+argument_list|(
+operator|&
+name|sem_stream_qos
+argument_list|,
+name|K_FOREVER
+argument_list|)
+expr_stmt|;
+block|}
+end_for
+begin_return
+return|return
+<END_ERROR>
+literal|0
+<START_ERROR>
+return|;
+end_return
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_for
+for|for
+control|(
+name|size_t
+name|i
+init|=
+literal|0U
+init|;
+name|i
+operator|<
+name|configured_stream_count
+condition|;
+name|i
+operator|++
+control|)
+block|{
+name|printk
+argument_list|(
+literal|"QoS:
+argument_list|,
+name|configured_stream_count
+argument_list|)
+expr_stmt|;
+name|k_sem_take
+argument_list|(
+operator|&
+name|sem_stream_qos
+argument_list|,
+name|K_FOREVER
+argument_list|)
+expr_stmt|;
+block|}
+end_for
+begin_return
+return|return
+name|err
+return|;
+end_return
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	for (size_t i = 0U; i < configured_stream_count; i++) {
+		printk("QoS: waiting for %zu streams\n", configured_stream_count);
+		k_sem_take(&sem_stream_qos, K_FOREVER);
+	}
+
+	return 0;
+The issue was with: samples: Bluetooth: Unicast client missing err check on sem
+
+The unicast client sample was missing an error check on the semaphore
+take. This caused the sample to hang if the semaphore was not
+initialized. Add the check to prevent a hang.. Here is the corrected version:
+
+
+	for (size_t i = 0U; i < configured_stream_count; i++) {
+		printk("QoS: waiting for %zu streams\n", configured_stream_count);
+		err = k_sem_take(&sem_stream_qos, K_FOREVER);
+		if (err) {
+			printk("Failed to take sem\n");
+			return err;
+		}
+	}
+
+	return 0;

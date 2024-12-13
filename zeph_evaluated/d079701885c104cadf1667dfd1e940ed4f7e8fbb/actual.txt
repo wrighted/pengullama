@@ -1,0 +1,167 @@
+P,FFP,F,F
+LCF
+Location was percise, but no fix applied.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to tracing: segger-sysview: fix compilation error. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	SEGGER_SYSVIEW_RecordEndCallU32(TID_PM_DEVICE_RUNTIME_PUT,	       \
+					(uint32_t)ret)
+#define sys_port_trace_pm_device_runtime_put_async_enter(dev, delay)	       \
+	SEGGER_SYSVIEW_RecordU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,	       \
+			 (uint32_t)(uintptr_t)dev, (uint32_t)delay.ticks)
+#define sys_port_trace_pm_device_runtime_put_async_exit(dev, delay, ret)       \
+	SEGGER_SYSVIEW_RecordEndCallU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,       \
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|SEGGER_SYSVIEW_RecordEndCallU32
+argument_list|(
+name|TID_PM_DEVICE_RUNTIME_PUT
+argument_list|,
+operator|(
+name|uint32_t
+operator|)
+name|ret
+argument_list|)
+end_expr_stmt
+begin_define
+define|#
+directive|define
+name|sys_port_trace_pm_device_runtime_put_async_enter
+parameter_list|(
+name|dev
+parameter_list|,
+name|delay
+parameter_list|)
+define|\
+value|SEGGER_SYSVIEW_RecordU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,
+end_define
+begin_define
+define|#
+directive|define
+name|sys_port_trace_pm_device_runtime_put_async_exit
+parameter_list|(
+name|dev
+parameter_list|,
+name|delay
+parameter_list|,
+name|ret
+parameter_list|)
+define|\
+value|SEGGER_SYSVIEW_RecordEndCallU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,
+end_define
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|SEGGER_SYSVIEW_RecordEndCallU32
+argument_list|(
+name|TID_PM_DEVICE_RUNTIME_PUT
+argument_list|,
+operator|(
+name|uint32_t
+operator|)
+name|ret
+argument_list|)
+end_expr_stmt
+begin_define
+define|#
+directive|define
+name|sys_port_trace_pm_device_runtime_put_async_enter
+parameter_list|(
+name|dev
+parameter_list|,
+name|delay
+parameter_list|)
+define|\
+<START_ERROR>
+value|SEGGER_SYSVIEW_RecordU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,
+<END_ERROR>
+end_define
+begin_define
+define|#
+directive|define
+name|sys_port_trace_pm_device_runtime_put_async_exit
+parameter_list|(
+name|dev
+parameter_list|,
+name|delay
+parameter_list|,
+name|ret
+parameter_list|)
+define|\
+value|SEGGER_SYSVIEW_RecordEndCallU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,
+end_define
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|SEGGER_SYSVIEW_RecordEndCallU32
+argument_list|(
+name|TID_PM_DEVICE_RUNTIME_PUT
+argument_list|,
+operator|(
+name|uint32_t
+operator|)
+name|ret
+argument_list|)
+end_expr_stmt
+begin_define
+define|#
+directive|define
+name|sys_port_trace_pm_device_runtime_put_async_enter
+parameter_list|(
+name|dev
+parameter_list|,
+name|delay
+parameter_list|)
+define|\
+value|SEGGER_SYSVIEW_RecordU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,
+end_define
+begin_define
+define|#
+directive|define
+name|sys_port_trace_pm_device_runtime_put_async_exit
+parameter_list|(
+name|dev
+parameter_list|,
+name|delay
+parameter_list|,
+name|ret
+parameter_list|)
+define|\
+value|SEGGER_SYSVIEW_RecordEndCallU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,
+end_define
+
+### Response:
+I corrected the issue in the code you provided:
+
+	SEGGER_SYSVIEW_RecordEndCallU32(TID_PM_DEVICE_RUNTIME_PUT,	       \
+					(uint32_t)ret)
+#define sys_port_trace_pm_device_runtime_put_async_enter(dev, delay)	       \
+	SEGGER_SYSVIEW_RecordU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,	       \
+			 (uint32_t)(uintptr_t)dev, (uint32_t)delay.ticks)
+#define sys_port_trace_pm_device_runtime_put_async_exit(dev, delay, ret)       \
+	SEGGER_SYSVIEW_RecordEndCallU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,       \
+The issue was with: tracing: segger-sysview: fix compilation error
+
+Fix compilation error by adding missing `)`.. Here is the corrected version:
+
+	SEGGER_SYSVIEW_RecordEndCallU32(TID_PM_DEVICE_RUNTIME_PUT,	       \
+					(uint32_t)ret)
+#define sys_port_trace_pm_device_runtime_put_async_enter(dev, delay)	       \
+	SEGGER_SYSVIEW_RecordU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,	       \
+			 (uint32_t)(uintptr_t)dev, (uint32_t)delay.ticks)
+#define sys_port_trace_pm_device_runtime_put_async_exit(dev, delay, ret)       \
+	SEGGER_SYSVIEW_RecordEndCallU32(TID_PM_DEVICE_RUNTIME_PUT_ASYNC,       \

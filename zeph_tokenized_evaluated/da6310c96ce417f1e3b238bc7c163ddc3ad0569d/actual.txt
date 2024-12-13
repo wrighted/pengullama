@@ -1,0 +1,51 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_function
+name|void
+name|soc_early_init_hook
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+name|clock_init
+argument_list|()
+expr_stmt|;
+block|}
+end_function
+
+### Error location:
+
+begin_function
+name|void
+name|soc_early_init_hook
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+name|clock_init
+argument_list|()
+expr_stmt|;
+block|}
+end_function
+
+### Error correction:
+
+Here is the tokenized code with the issue corrected:
+
+begin_function
+name|void
+name|soc_early_init_hook
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+name|clock_init
+argument_list|()
+expr_stmt|;
+name|z_clock_init
+argument_list|()
+expr_stmt|;
+block|}
+end_function

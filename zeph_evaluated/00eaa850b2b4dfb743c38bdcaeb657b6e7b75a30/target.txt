@@ -1,0 +1,108 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/00eaa850b2b4dfb743c38bdcaeb657b6e7b75a30
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: input: sbus: Fix incorrect index reference of INPUT_SBUS_INIT. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+#define INPUT_SBUS_INIT(n)                                                                         \
+                                                                                                   \
+	static const struct sbus_input_channel input_##id[] = {                                    \
+		DT_INST_FOREACH_CHILD(n, SBUS_INPUT_CHANNEL_INITIALIZER)                           \
+	};                                                                                         \
+	DT_INST_FOREACH_CHILD(n, INPUT_CHANNEL_CHECK)                                              \
+	static struct input_sbus_data sbus_data_##n;                                               \
+                                                                                                   \
+	static const struct input_sbus_config sbus_cfg_##n = {                                     \
+		.channel_info = input_##id,                                                        \
+		.uart_dev = DEVICE_DT_GET(DT_INST_BUS(n)),                                         \
+		.num_channels = ARRAY_SIZE(input_##id),                                            \
+		.cb = sbus_uart_isr,                                                               \
+	};                                                                                         \
+                                                                                                   \
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_define
+define|#
+directive|define
+name|INPUT_SBUS_INIT
+parameter_list|(
+name|n
+parameter_list|)
+define|\
+value|static
+end_define
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_define
+<END_ERROR>
+define|#
+directive|define
+name|INPUT_SBUS_INIT
+parameter_list|(
+name|n
+parameter_list|)
+define|\
+value|static
+end_define
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_define
+define|#
+directive|define
+name|INPUT_SBUS_INIT
+parameter_list|(
+name|n
+parameter_list|)
+define|\
+value|static
+end_define
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+#define INPUT_SBUS_INIT(n)                                                                         \
+                                                                                                   \
+	static const struct sbus_input_channel input_##id[] = {                                    \
+		DT_INST_FOREACH_CHILD(n, SBUS_INPUT_CHANNEL_INITIALIZER)                           \
+	};                                                                                         \
+	DT_INST_FOREACH_CHILD(n, INPUT_CHANNEL_CHECK)                                              \
+	static struct input_sbus_data sbus_data_##n;                                               \
+                                                                                                   \
+	static const struct input_sbus_config sbus_cfg_##n = {                                     \
+		.channel_info = input_##id,                                                        \
+		.uart_dev = DEVICE_DT_GET(DT_INST_BUS(n)),                                         \
+		.num_channels = ARRAY_SIZE(input_##id),                                            \
+		.cb = sbus_uart_isr,                                                               \
+	};                                                                                         \
+                                                                                                   \
+The issue was with: drivers: input: sbus: Fix incorrect index reference of INPUT_SBUS_INIT
+
+The argument of INPUT_SBUS_INIT is named `n,` but there are some places
+where it references `id.`  Correcting these.. Here is the corrected version:
+
+
+#define INPUT_SBUS_INIT(n)                                                                         \
+                                                                                                   \
+	static const struct sbus_input_channel input_##n[] = {                                     \
+		DT_INST_FOREACH_CHILD(n, SBUS_INPUT_CHANNEL_INITIALIZER)                           \
+	};                                                                                         \
+	DT_INST_FOREACH_CHILD(n, INPUT_CHANNEL_CHECK)                                              \
+	static struct input_sbus_data sbus_data_##n;                                               \
+                                                                                                   \
+	static const struct input_sbus_config sbus_cfg_##n = {                                     \
+		.channel_info = input_##n,                                                         \
+		.uart_dev = DEVICE_DT_GET(DT_INST_BUS(n)),                                         \
+		.num_channels = ARRAY_SIZE(input_##n),                                             \
+		.cb = sbus_uart_isr,                                                               \
+	};                                                                                         \
+                                                                                                   \

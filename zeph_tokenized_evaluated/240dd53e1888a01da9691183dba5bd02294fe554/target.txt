@@ -1,0 +1,58 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/240dd53e1888a01da9691183dba5bd02294fe554
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_function_decl
+<END_ERROR>
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment

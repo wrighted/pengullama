@@ -1,0 +1,95 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/240dd53e1888a01da9691183dba5bd02294fe554
+
+### Instruction:
+I am having trouble with the following code in relation to sys: arch_interface: fix doc in arch_user_mode_enter. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+size_t arch_virt_region_align(uintptr_t phys, size_t size);
+
+/**
+* Perform a one-way transition from supervisor to kernel mode.
+ *
+ * Implementations of this function must do the following:
+ *
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_function_decl
+<END_ERROR>
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+size_t arch_virt_region_align(uintptr_t phys, size_t size);
+
+/**
+* Perform a one-way transition from supervisor to kernel mode.
+ *
+ * Implementations of this function must do the following:
+ *
+The issue was with: sys: arch_interface: fix doc in arch_user_mode_enter
+
+The transition is to USER mode, and not kernel mode.. Here is the corrected version:
+
+size_t arch_virt_region_align(uintptr_t phys, size_t size);
+
+/**
+* Perform a one-way transition from supervisor to user mode.
+ *
+ * Implementations of this function must do the following:
+ *

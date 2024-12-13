@@ -10,7 +10,9 @@ def main(filename):
     data = json.loads(json_out)
 
     # Create the alpaca_prompt using formatted strings
-    alpaca_prompt = """Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+    alpaca_prompt = """
+Original commit:
+https://github.com/zephyrproject-rtos/zephyr/commit/{}
 
 ### Instruction:
 {}
@@ -34,6 +36,7 @@ def main(filename):
 
         # Format and print the prompt using data from the JSON
         formatted_prompt = alpaca_prompt.format(
+            point['commit_hash'],
             point['instruction'],
             point['input'],
             point['tokenized'],

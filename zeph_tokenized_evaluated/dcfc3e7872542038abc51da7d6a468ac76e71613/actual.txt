@@ -1,0 +1,66 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_if_stmt
+unit|}
+else|else
+block|{
+comment|/*
+name|reg
+operator||=
+name|IOMUXC_SW_PAD_CTL_PAD_PUS_MASK
+expr_stmt|;
+block|}
+end_if_stmt
+begin_comment
+comment|/*
+end_comment
+begin_if_stmt
+if|if
+condition|(
+name|config
+operator|->
+name|pin_muxes
+index|[
+name|cfg_idx
+index|]
+operator|.
+name|pdrv_mux
+condition|)
+block|{
+end_if_stmt
+
+### Error location:
+
+begin_if_stmt
+### Corrected code:
+
+begin_if_stmt
+unit|}
+else|else
+block|{
+comment|/*
+name|reg
+operator||=
+name|IOMUXC_SW_PAD_CTL_PAD_PUS_MASK
+expr_stmt|;
+block|}
+end_if_stmt
+begin_comment
+comment|/*
+end_comment
+begin_if_stmt
+if|if
+condition|(
+name|config
+operator|->
+name|pin_muxes
+index|[
+name|cfg_idx
+index|]
+operator|.
+name|pdrv_mux
+condition|)
+block|{
+end_if_stmt

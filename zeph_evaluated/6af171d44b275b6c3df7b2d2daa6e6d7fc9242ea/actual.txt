@@ -1,0 +1,88 @@
+P,PPP,P,P
+CO
+Matches expected.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to include: net_if: Fix IPV6 prefix struct doc desc. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+/**
+ * @brief Network Interface IPv6 prefixes
+ *
+* Stores the multicast IP addresses assigned to this network interface.
+ */
+struct net_if_ipv6_prefix {
+	/** Prefix lifetime */
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_comment
+comment|/**
+end_comment
+begin_struct
+struct|struct
+name|net_if_ipv6_prefix
+block|{
+end_struct
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_comment
+<END_ERROR>
+comment|/**
+end_comment
+begin_struct
+struct|struct
+name|net_if_ipv6_prefix
+block|{
+end_struct
+begin_comment
+comment|/**
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_comment
+comment|/**
+end_comment
+begin_struct
+struct|struct
+name|net_if_ipv6_prefix
+block|{
+end_struct
+begin_comment
+comment|/**
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+/**
+ * @brief Network Interface IPv6 prefixes
+ *
+* Stores the multicast IP addresses assigned to this network interface.
+ */
+struct net_if_ipv6_prefix {
+	/** Prefix lifetime */
+The issue was with: include: net_if: Fix IPV6 prefix struct doc desc
+
+This fixes a typo in the net_if_ipv6_prefix struct doc description.. Here is the corrected version:
+
+/**
+ * @brief Network Interface IPv6 prefixes
+ *
+* Stores the multicast IPv6 prefixes assigned to this network interface.
+ */
+struct net_if_ipv6_prefix {
+	/** Prefix lifetime */

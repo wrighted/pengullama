@@ -1,0 +1,55 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_comment
+comment|/**
+end_comment
+begin_decl
+specifier|static
+name|int
+name|tmag5273_check_device_status
+argument_list|(
+specifier|const
+expr|struct
+name|tmag5273_config
+operator|*
+name|drv_cfg
+argument_list|,
+end_decl
+
+### Error location:
+
+begin_comment
+comment|/**
+end_comment
+begin_decl
+specifier|static
+name|int
+name|tmag5273_check_device_status
+argument_list|(
+specifier|const
+expr|struct
+name|tmag5273_config
+operator|*
+name|drv_cfg
+argument_list|,
+end_decl
+
+### Error correction:
+
+begin_comment
+comment|/**
+end_comment
+begin_decl
+specifier|static
+name|int
+name|tmag5273_check_device_status
+argument_list|(
+specifier|const
+expr|struct
+name|tmag5273_config
+operator|*
+name|drv_cfg
+argument_list|,
+end_decl

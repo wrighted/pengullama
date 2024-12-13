@@ -1,0 +1,186 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/0cf89bb8b41aeb039ea373efc0766eeb64cccc3f
+
+### Instruction:
+I am having trouble with the following code in relation to drivers/spi/spi_xlnx_axi_quadspi: Build fix w CONFIG_SPI_ASYNC. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		 * work in the ISR, so just post the event.
+		 */
+#ifdef CONFIG_SPI_ASYNC
+		if (ctx->asynchronous) {
+			xlnx_quadspi_read_fifo(dev);
+			xlnx_quadspi_start_tx(dev);
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+operator|*
+name|work
+name|in
+name|the
+name|ISR
+operator|,
+name|so
+name|just
+name|post
+name|the
+name|event
+operator|.
+modifier|*
+operator|/
+end_expr_stmt
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|CONFIG_SPI_ASYNC
+end_ifdef
+begin_if_stmt
+if|if
+condition|(
+name|ctx
+operator|->
+name|asynchronous
+condition|)
+block|{
+name|xlnx_quadspi_read_fifo
+argument_list|(
+name|dev
+argument_list|)
+expr_stmt|;
+name|xlnx_quadspi_start_tx
+argument_list|(
+name|dev
+argument_list|)
+expr_stmt|;
+end_if_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+operator|*
+name|work
+name|in
+name|the
+name|ISR
+operator|,
+name|so
+name|just
+name|post
+name|the
+name|event
+operator|.
+modifier|*
+operator|/
+<START_ERROR>
+end_expr_stmt
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|CONFIG_SPI_ASYNC
+end_ifdef
+<END_ERROR>
+begin_if_stmt
+if|if
+condition|(
+name|ctx
+operator|->
+name|asynchronous
+condition|)
+block|{
+name|xlnx_quadspi_read_fifo
+argument_list|(
+name|dev
+argument_list|)
+expr_stmt|;
+name|xlnx_quadspi_start_tx
+argument_list|(
+name|dev
+argument_list|)
+expr_stmt|;
+end_if_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+operator|*
+name|work
+name|in
+name|the
+name|ISR
+operator|,
+name|so
+name|just
+name|post
+name|the
+name|event
+operator|.
+modifier|*
+operator|/
+ifdef|#
+directive|ifdef
+name|CONFIG_SPI_ASYNC
+expr|struct
+name|spi_context
+operator|*
+name|ctx
+operator|=
+operator|&
+name|data
+operator|->
+name|ctx
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|ctx
+operator|->
+name|asynchronous
+condition|)
+block|{
+name|xlnx_quadspi_read_fifo
+argument_list|(
+name|dev
+argument_list|)
+expr_stmt|;
+name|xlnx_quadspi_start_tx
+argument_list|(
+name|dev
+argument_list|)
+expr_stmt|;
+end_if_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+		 * work in the ISR, so just post the event.
+		 */
+#ifdef CONFIG_SPI_ASYNC
+		if (ctx->asynchronous) {
+			xlnx_quadspi_read_fifo(dev);
+			xlnx_quadspi_start_tx(dev);
+The issue was with: drivers/spi/spi_xlnx_axi_quadspi: Build fix w CONFIG_SPI_ASYNC
+
+Fix a build error when CONFIG_SPI_ASYNC is set.
+The issue was detected by CI
+
+```
+spi_xlnx_axi_quadspi.c: In function 'xlnx_quadspi_isr':
+spi_xlnx_axi_quadspi.c:489:21: error: 'ctx' undeclared
+  489 |                 if (ctx->asynchronous) {
+      |                     ^~~
+```. Here is the corrected version:
+
+		 * work in the ISR, so just post the event.
+		 */
+#ifdef CONFIG_SPI_ASYNC
+		struct spi_context *ctx = &data->ctx;
+
+		if (ctx->asynchronous) {
+			xlnx_quadspi_read_fifo(dev);
+			xlnx_quadspi_start_tx(dev);

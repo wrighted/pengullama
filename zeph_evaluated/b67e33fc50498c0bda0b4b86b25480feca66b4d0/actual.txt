@@ -1,0 +1,174 @@
+F,FPF,P,F
+LCF
+Changed the same parameter, but not similairly.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: bmi160: fix the issue of missing gpio cfg for i2c. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	{					       \
+		.bus.i2c = I2C_DT_SPEC_INST_GET(inst), \
+		.bus_io = &bmi160_bus_io_i2c,	       \
+	}
+
+#define BMI160_DEFINE_I2C(inst)							    \
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_block
+unit|}
+block|{
+operator|.
+name|bus
+operator|.
+name|i2c
+operator|=
+name|I2C_DT_SPEC_INST_GET
+argument_list|(
+name|inst
+argument_list|)
+block|,
+operator|.
+name|bus_io
+operator|=
+operator|&
+name|bmi160_bus_io_i2c
+block|,
+block|}
+end_block
+begin_define
+define|#
+directive|define
+name|BMI160_DEFINE_I2C
+parameter_list|(
+name|inst
+parameter_list|)
+define|\
+end_define
+
+### Error location:
+
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_block
+unit|}
+block|{
+operator|.
+name|bus
+operator|.
+name|i2c
+operator|=
+name|I2C_DT_SPEC_INST_GET
+argument_list|(
+name|inst
+argument_list|)
+block|,
+operator|.
+name|bus_io
+operator|=
+operator|&
+name|bmi160_bus_io_i2c
+block|,
+<END_ERROR>
+<START_ERROR>
+block|}
+end_block
+begin_define
+define|#
+directive|define
+name|BMI160_DEFINE_I2C
+parameter_list|(
+name|inst
+parameter_list|)
+define|\
+end_define
+
+### Error correction:
+
+Here is the tokenized code with the issue corrected:
+
+begin_block
+unit|}
+block|{
+operator|.
+name|bus
+operator|.
+name|i2c
+operator|=
+name|I2C_DT_SPEC_INST_GET
+argument_list|(
+name|inst
+argument_list|)
+block|,
+operator|.
+name|bus_io
+operator|=
+operator|&
+name|bmi160_bus_io_i2c
+block|,
+operator|.
+name|cfg
+operator|=
+block|{
+operator|.
+name|sda_pin
+operator|=
+name|GPIO_DT_GET
+argument_list|(
+name|cfg
+argument_list|,
+name|sda_pin
+argument_list|)
+block|,
+operator|.
+name|scl_pin
+operator|=
+name|GPIO_DT_GET
+argument_list|(
+name|cfg
+argument_list|,
+name|scl_pin
+argument_list|)
+block|,
+block|}
+block|,
+block|}
+end_block
+begin_define
+define|#
+directive|define
+name|BMI160_DEFINE_I2C
+parameter_list|(
+name|inst
+parameter_list|)
+define|\
+end_define
+
+### Response:
+
+I corrected the issue in the code you provided:
+
+	{					       \
+		.bus.i2c = I2C_DT_SPEC_INST_GET(inst), \
+		.bus_io = &bmi160_bus_io_i2c,	       \
+	}
+
+#define BMI160_DEFINE_I2C(inst)							    \
+The issue was with: sensor: bmi160: fix the issue of missing gpio cfg for i2c
+
+Fix the issue of missing gpio cfg for i2c.. Here is the corrected version:
+
+	{					       \
+		.bus.i2c = I2C_DT_SPEC_INST_GET(inst), \
+		.bus_io = &bmi160_bus_io_i2c,	       \
+		.cfg = {.sda_pin = GPIO_DT_GET(cfg, sda_pin), \
+			.scl_pin = GPIO_DT_GET(cfg, scl_pin)}, \
+	}
+
+#define BMI160_DEFINE_I2C(inst)							    \

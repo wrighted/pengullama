@@ -1,0 +1,183 @@
+PP,FFP,F,F
+PAF
+Did not match, but area idnetified was similar.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: iso: make TX path service all connections. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	if (!frag) {
+		LOG_DBG("signaled ready but no frag available");
+		return NULL;
+	}
+
+		LOG_DBG("channel has been disconnected");
+		__ASSERT_NO_MSG(b == frag);
+
+		return NULL;
+	}
+
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_if_stmt
+if|if
+condition|(
+operator|!
+name|frag
+condition|)
+block|{
+name|LOG_DBG
+argument_list|(
+literal|"signaled
+argument_list|)
+expr_stmt|;
+return|return
+name|NULL
+return|;
+block|}
+end_if_stmt
+begin_expr_stmt
+unit|}
+operator|->
+name|channel
+operator|==
+name|disconnected
+operator|&&
+name|b
+operator|==
+name|frag
+operator|&&
+name|__ASSERT_NO_MSG
+argument_list|(
+name|b
+argument_list|)
+expr_stmt|;
+return|return
+name|NULL
+return|;
+block|}
+end_expr_stmt
+
+### Error location:
+
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_if_stmt
+if|if
+condition|(
+operator|!
+name|frag
+condition|)
+block|{
+name|LOG_DBG
+argument_list|(
+literal|"signaled
+argument_list|)
+expr_stmt|;
+return|return
+name|NULL
+return|;
+block|}
+end_if_stmt
+begin_expr_stmt
+unit|}
+operator|->
+name|channel
+operator|==
+name|disconnected
+operator|&&
+name|b
+operator|==
+<START_ERROR>
+name|frag
+operator|&&
+name|__ASSERT_NO_MSG
+<END_ERROR>
+argument_list|(
+name|b
+argument_list|)
+expr_stmt|;
+return|return
+name|NULL
+return|;
+block|}
+end_expr_stmt
+
+### Error correction:
+
+Here is the tokenized code with the issue corrected:
+
+begin_if_stmt
+if|if
+condition|(
+operator|!
+name|frag
+condition|)
+block|{
+name|LOG_DBG
+argument_list|(
+literal|"signaled
+argument_list|)
+expr_stmt|;
+return|return
+name|NULL
+return|;
+block|}
+end_if_stmt
+begin_expr_stmt
+unit|}
+operator|->
+name|channel
+operator|==
+name|disconnected
+operator|&&
+name|b
+operator|==
+name|frag
+expr_stmt|;
+return|return
+name|NULL
+return|;
+block|}
+end_expr_stmt
+
+### Response:
+
+I corrected the issue in the code you provided:
+
+
+	if (!frag) {
+		LOG_DBG("signaled ready but no frag available");
+		return NULL;
+	}
+
+		LOG_DBG("channel has been disconnected");
+		__ASSERT_NO_MSG(b == frag);
+
+		return NULL;
+	}
+
+The issue was with: Bluetooth: iso: make TX path service all connections
+
+The channel is disconnected, so we can't use the frag anymore.
+The TX path was only servicing the current connection, which
+could lead to a deadlock if we were servicing multiple
+connections.. Here is the corrected version:
+
+
+	if (!frag) {
+		LOG_DBG("signaled ready but no frag available");
+		return NULL;
+	}
+
+		LOG_DBG("channel has been disconnected");
+		return NULL;
+	}

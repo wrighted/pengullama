@@ -1,0 +1,40 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_define
+define|#
+directive|define
+name|INPUT_SBUS_INIT
+parameter_list|(
+name|n
+parameter_list|)
+define|\
+value|static
+end_define
+
+### Error location:
+
+begin_define
+define|#
+directive|define
+name|INPUT_SBUS_INIT
+parameter_list|(
+name|n
+parameter_list|)
+define|\
+value|static
+end_define
+
+### Error correction:
+
+begin_define
+define|#
+directive|define
+name|INPUT_SBUS_INIT
+parameter_list|(
+name|n
+parameter_list|)
+define|\
+value|static
+end_define

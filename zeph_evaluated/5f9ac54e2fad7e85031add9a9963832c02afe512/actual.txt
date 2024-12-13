@@ -1,0 +1,113 @@
+F,FFF,F,F
+LCC
+Made an unrelated change.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Mesh: Fix unable sent mesh message. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		return;
+	}
+
+	if (!bt_mesh_adv_gatt_send()) {
+		atomic_set_bit(adv->flags, ADV_FLAG_PROXY);
+	}
+
+	if (atomic_test_and_clear_bit(adv->flags, ADV_FLAG_SCHEDULE_PENDING)) {
+
+### Tokenized:
+
+begin_return
+return|return;
+end_return
+begin_expr_stmt
+unit|}
+operator|(
+operator|!
+name|bt_mesh_adv_gatt_send
+argument_list|()
+operator|)
+block|{
+name|atomic_set_bit
+argument_list|(
+name|adv
+operator|->
+name|flags
+argument_list|,
+name|ADV_FLAG_PROXY
+argument_list|)
+block|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|atomic_test_and_clear_bit
+argument_list|(
+name|adv
+operator|->
+name|flags
+argument_list|,
+name|ADV_FLAG_SCHEDULE_PENDING
+argument_list|)
+condition|)
+block|{
+end_if_stmt
+
+### Error location:
+I have identified the issue in the code you provided. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+<START_ERROR>
+		return;
+	}
+
+	if (!bt_mesh_adv_gatt_send()) {
+		atomic_set_bit(adv->flags, ADV_FLAG_PROXY);
+	}
+
+	if (atomic_test_and_clear_bit(adv->flags, ADV_FLAG_SCHEDULE_PENDING)) {
+<END_ERROR>
+
+### Error correction:
+Here is the corrected version:
+
+		return;
+	}
+
+	if (!bt_mesh_adv_gatt_send()) {
+		atomic_set_bit(adv->flags, ADV_FLAG_PROXY);
+	}
+
+	if (atomic_test_and_clear_bit(adv->flags, ADV_FLAG_SCHEDULE_PENDING)) {
+		/* If we are in the process of sending a message and
+		 * we are unable to do so, schedule another message.
+		 */
+		if (adv->state == BT_MESH_ADV_STATE_SENDING) {
+			bt_mesh_adv_schedule();
+		}
+	}
+
+### Response:
+I corrected the issue in the code you provided. The issue was with: Bluetooth: Mesh: Fix unable sent mesh message
+
+Fix a bug that caused the mesh proxy to not schedule a new
+message if a message could not be sent.. Here is the corrected version:
+
+		return;
+	}
+
+	if (!bt_mesh_adv_gatt_send()) {
+		atomic_set_bit(adv->flags, ADV_FLAG_PROXY);
+	}
+
+	if (atomic_test_and_clear_bit(adv->flags, ADV_FLAG_SCHEDULE_PENDING)) {
+		/* If we are in the process of sending a message and
+		 * we are unable to do so, schedule another message.
+		 */
+		if (adv->state == BT_MESH_ADV_STATE_SENDING) {
+			bt_mesh_adv_schedule();
+		}
+	}

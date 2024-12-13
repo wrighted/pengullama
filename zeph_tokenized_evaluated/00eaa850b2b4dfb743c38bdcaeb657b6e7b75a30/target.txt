@@ -1,0 +1,43 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/00eaa850b2b4dfb743c38bdcaeb657b6e7b75a30
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_define
+define|#
+directive|define
+name|INPUT_SBUS_INIT
+parameter_list|(
+name|n
+parameter_list|)
+define|\
+value|static
+end_define
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_define
+<END_ERROR>
+define|#
+directive|define
+name|INPUT_SBUS_INIT
+parameter_list|(
+name|n
+parameter_list|)
+define|\
+value|static
+end_define
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_define
+define|#
+directive|define
+name|INPUT_SBUS_INIT
+parameter_list|(
+name|n
+parameter_list|)
+define|\
+value|static
+end_define

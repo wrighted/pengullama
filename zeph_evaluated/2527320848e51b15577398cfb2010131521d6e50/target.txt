@@ -1,0 +1,168 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/2527320848e51b15577398cfb2010131521d6e50
+
+### Instruction:
+I am having trouble with the following code in relation to net: lib: sntp: add support for unspecified IP-family type. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	uint64_t deadline;
+	uint32_t iter_timeout;
+
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_protocol = 0;
+	/* 123 is the standard SNTP port per RFC4330 */
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_decl_stmt
+name|uint64_t
+name|deadline
+decl_stmt|;
+end_decl_stmt
+begin_decl_stmt
+name|uint32_t
+name|iter_timeout
+decl_stmt|;
+end_decl_stmt
+begin_expr_stmt
+name|hints
+operator|.
+name|ai_family
+operator|=
+name|AF_INET
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|hints
+operator|.
+name|ai_socktype
+operator|=
+name|SOCK_DGRAM
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|hints
+operator|.
+name|ai_protocol
+operator|=
+literal|0
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_decl_stmt
+name|uint64_t
+name|deadline
+decl_stmt|;
+end_decl_stmt
+begin_decl_stmt
+name|uint32_t
+name|iter_timeout
+decl_stmt|;
+end_decl_stmt
+begin_expr_stmt
+name|hints
+operator|.
+name|ai_family
+operator|=
+<START_ERROR>
+name|AF_INET
+<END_ERROR>
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|hints
+operator|.
+name|ai_socktype
+operator|=
+name|SOCK_DGRAM
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|hints
+operator|.
+name|ai_protocol
+operator|=
+literal|0
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_decl_stmt
+name|uint64_t
+name|deadline
+decl_stmt|;
+end_decl_stmt
+begin_decl_stmt
+name|uint32_t
+name|iter_timeout
+decl_stmt|;
+end_decl_stmt
+begin_expr_stmt
+name|hints
+operator|.
+name|ai_family
+operator|=
+name|AF_UNSPEC
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|hints
+operator|.
+name|ai_socktype
+operator|=
+name|SOCK_DGRAM
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|hints
+operator|.
+name|ai_protocol
+operator|=
+literal|0
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+	uint64_t deadline;
+	uint32_t iter_timeout;
+
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_protocol = 0;
+	/* 123 is the standard SNTP port per RFC4330 */
+The issue was with: net: lib: sntp: add support for unspecified IP-family type
+
+`sntp_simple()` was forcing to resolve SNTP-server's URL into IPv4 address
+addresses. This was not allowing sntp_init() to succeed in case the system
+ did not support IPv4 addresses (returning EPFNOSUPPORT, ie. Protocol
+Family error).
+Now by default SNTP has unspecified family type and it relies on
+`net_getaddrinfo_addr_str()` to be able to resolve literal server URLs
+into the supported IP family type.. Here is the corrected version:
+
+	uint64_t deadline;
+	uint32_t iter_timeout;
+
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_protocol = 0;
+	/* 123 is the standard SNTP port per RFC4330 */

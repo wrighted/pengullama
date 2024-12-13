@@ -177,6 +177,7 @@ commit_count=0
 for commit_hash in "${filtered_commits[@]}"; do
     # Generate JSON as before
     sanitized_commit_message=$(clean_commit_message "$(git log -1 --pretty=format:'%B' "$commit_hash")")
+    sanitized_commit_title=$(clean_commit_message "$(git log -1 --pretty=format:'%s' "$commit_hash")")
 
     parent_commit=$(git rev-list --parents -n 1 "$commit_hash" | cut -d' ' -f2)
     diff=$(git diff -U3 "$parent_commit" "$commit_hash")
@@ -189,19 +190,22 @@ for commit_hash in "${filtered_commits[@]}"; do
     code_after_tokens=$(tokenize "$code_after")
     wrapped_after_tokens=$(wrap_changed_tokens "$code_before_tokens" "$code_after_tokens")
 
-    json_out=$(jq -n --arg instruction "$sanitized_commit_message" \
+    json_out=$(jq -n --arg hash "$commit_hash" \
+                     --arg instruction "$sanitized_commit_title" \
                      --arg input "$code_before" \
                      --arg tokenized "$code_before_tokens" \
                      --arg location "$wrapped_after_tokens" \
                      --arg fixed "$code_after_tokens" \
                      --arg result "$code_after" \
+                     --arg response "$sanitized_commit_message" \
         '{
+            commit_hash: $hash,
             instruction: ("I am having trouble with the following code in relation to " + $instruction + ". What''s wrong? Please fix this issue."),
             input: ("Here is the faulty code:\n\n" + ($input | split("\n") | map(. | ltrimstr(" ")) | join("\n"))),
             tokenized: ("Here is the faulty code which has been tokenized:\n\n" + ($tokenized | split("\n") | map(. | ltrimstr(" ")) | join("\n"))),
             error_location: ("I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:\n\n" + ($location | split("\n") | map(. | ltrimstr(" ")) | join("\n"))),
             error_correction: ("Here is the tokenized code with the issue corrected:\n\n" + ($fixed | split("\n") | map(. | ltrimstr(" ")) | join("\n"))),
-            response: ("I corrected the issue in the code you provided:\n\n" + ($input | split("\n") | map(. | ltrimstr(" ")) | join("\n")) + "\nThe issue was with: " + $instruction + ". Here is the corrected version:\n\n" + ($result | split("\n") | map(. | ltrimstr(" ")) | join("\n")))
+            response: ("I corrected the issue in the code you provided:\n\n" + ($input | split("\n") | map(. | ltrimstr(" ")) | join("\n")) + "\nThe issue was with: " + $response + ". Here is the corrected version:\n\n" + ($result | split("\n") | map(. | ltrimstr(" ")) | join("\n")))
         }')
 
     # Categorize as included or excluded

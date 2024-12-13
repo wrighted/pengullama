@@ -1,0 +1,148 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/b2b40169639e0aa8fa27fd8e385f6647b708c71d
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: charger: bq25180: fix return value check. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	}
+
+	if (cfg->initial_current_microamp > 0) {
+		bq25180_set_charge_current(dev, cfg->initial_current_microamp);
+		if (ret < 0) {
+			return ret;
+		}
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+unit|}
+operator|(
+name|cfg
+operator|->
+name|initial_current_microamp
+operator|>
+literal|0
+operator|)
+block|{
+name|bq25180_set_charge_current
+argument_list|(
+name|dev
+argument_list|,
+name|cfg
+operator|->
+name|initial_current_microamp
+argument_list|)
+block|;
+if|if
+condition|(
+name|ret
+operator|<
+literal|0
+condition|)
+block|{
+return|return
+name|ret
+return|;
+expr|}
+end_expr_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+unit|}
+operator|(
+name|cfg
+operator|->
+name|initial_current_microamp
+operator|>
+literal|0
+operator|)
+block|{
+<END_ERROR>
+<START_ERROR>
+name|bq25180_set_charge_current
+argument_list|(
+name|dev
+argument_list|,
+name|cfg
+operator|->
+name|initial_current_microamp
+argument_list|)
+block|;
+if|if
+condition|(
+name|ret
+operator|<
+literal|0
+condition|)
+block|{
+return|return
+name|ret
+return|;
+expr|}
+end_expr_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+unit|}
+operator|(
+name|cfg
+operator|->
+name|initial_current_microamp
+operator|>
+literal|0
+operator|)
+block|{
+name|ret
+operator|=
+name|bq25180_set_charge_current
+argument_list|(
+name|dev
+argument_list|,
+name|cfg
+operator|->
+name|initial_current_microamp
+argument_list|)
+block|;
+if|if
+condition|(
+name|ret
+operator|<
+literal|0
+condition|)
+block|{
+return|return
+name|ret
+return|;
+expr|}
+end_expr_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+	}
+
+	if (cfg->initial_current_microamp > 0) {
+		bq25180_set_charge_current(dev, cfg->initial_current_microamp);
+		if (ret < 0) {
+			return ret;
+		}
+The issue was with: drivers: charger: bq25180: fix return value check
+
+Fix missing check of the return value of `bq25180_set_charge_current`
+function, resulting in logically dead code, as indicated by Coverity
+CID 347197.. Here is the corrected version:
+
+	}
+
+	if (cfg->initial_current_microamp > 0) {
+		ret = bq25180_set_charge_current(dev, cfg->initial_current_microamp);
+		if (ret < 0) {
+			return ret;
+		}

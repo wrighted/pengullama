@@ -1,0 +1,103 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/da6310c96ce417f1e3b238bc7c163ddc3ad0569d
+
+### Instruction:
+I am having trouble with the following code in relation to soc: mcxc: Enable bandgap buffer for on die temperature measurement. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+void soc_early_init_hook(void)
+{
+	clock_init();
+}
+
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_function
+name|void
+name|soc_early_init_hook
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+name|clock_init
+argument_list|()
+expr_stmt|;
+block|}
+end_function
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_function
+name|void
+name|soc_early_init_hook
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+<END_ERROR>
+<START_ERROR>
+name|clock_init
+argument_list|()
+expr_stmt|;
+block|}
+end_function
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_function
+name|void
+name|soc_early_init_hook
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+ifdef|#
+directive|ifdef
+name|CONFIG_TEMP_KINETIS
+comment|/*
+name|PMC
+operator|->
+name|REGSC
+operator||=
+name|PMC_REGSC_BGBE_MASK
+expr_stmt|;
+endif|#
+directive|endif
+comment|/*
+name|clock_init
+argument_list|()
+expr_stmt|;
+block|}
+end_function
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+void soc_early_init_hook(void)
+{
+	clock_init();
+}
+
+The issue was with: soc: mcxc: Enable bandgap buffer for on die temperature measurement
+
+Bandgap voltage is used for on die temperature measurement. Bandgap
+buffer has to be enabled explicitly to get correct tempearature.
+Enable the buffer if TEMP_KINETIS is selected.. Here is the corrected version:
+
+
+void soc_early_init_hook(void)
+{
+#ifdef CONFIG_TEMP_KINETIS
+	/* enable bandgap buffer */
+	PMC->REGSC |= PMC_REGSC_BGBE_MASK;
+#endif /* CONFIG_TEMP_KINETIS */
+
+	clock_init();
+}

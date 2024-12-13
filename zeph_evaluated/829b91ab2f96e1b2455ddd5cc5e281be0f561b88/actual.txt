@@ -1,0 +1,182 @@
+P,FFP,F,F
+PAC
+Did not add the same functionality but modified the same area.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to shell: Fix scrolling long commands in history. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+void z_shell_print_cmd(const struct shell *sh)
+{
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", sh->ctx->cmd_buff);
+}
+
+void z_shell_print_prompt_and_cmd(const struct shell *sh)
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_function
+name|void
+name|z_shell_print_cmd
+parameter_list|(
+specifier|const
+name|struct
+name|shell
+modifier|*
+name|sh
+parameter_list|)
+block|{
+name|z_shell_raw_fprintf
+argument_list|(
+name|sh
+operator|->
+name|fprintf_ctx
+argument_list|,
+literal|"%s"
+argument_list|,
+name|sh
+operator|->
+name|ctx
+operator|->
+name|cmd_buff
+argument_list|)
+expr_stmt|;
+block|}
+end_function
+begin_decl
+name|void
+name|z_shell_print_prompt_and_cmd
+argument_list|(
+specifier|const
+name|struct
+name|shell
+operator|*
+name|sh
+argument_list|)
+end_decl
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_function
+name|void
+name|z_shell_print_cmd
+parameter_list|(
+specifier|const
+name|struct
+name|shell
+modifier|*
+name|sh
+parameter_list|)
+block|{
+name|z_shell_raw_fprintf
+argument_list|(
+name|sh
+operator|->
+name|fprintf_ctx
+argument_list|,
+literal|"%s"
+argument_list|,
+<START_ERROR>
+name|sh
+operator|->
+name|ctx
+operator|->
+name|cmd_buff
+<END_ERROR>
+argument_list|)
+expr_stmt|;
+block|}
+end_function
+begin_decl
+name|void
+name|z_shell_print_prompt_and_cmd
+argument_list|(
+specifier|const
+name|struct
+name|shell
+operator|*
+name|sh
+argument_list|)
+end_decl
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_function
+name|void
+name|z_shell_print_cmd
+parameter_list|(
+specifier|const
+name|struct
+name|shell
+modifier|*
+name|sh
+parameter_list|)
+block|{
+name|z_shell_raw_fprintf
+argument_list|(
+name|sh
+operator|->
+name|fprintf_ctx
+argument_list|,
+literal|"%s"
+argument_list|,
+name|z_shell_get_cmd
+argument_list|(
+name|sh
+operator|->
+name|ctx
+argument_list|)
+argument_list|)
+expr_stmt|;
+block|}
+end_function
+begin_decl
+name|void
+name|z_shell_print_prompt_and_cmd
+argument_list|(
+specifier|const
+name|struct
+name|shell
+operator|*
+name|sh
+argument_list|)
+end_decl
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+void z_shell_print_cmd(const struct shell *sh)
+{
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", sh->ctx->cmd_buff);
+}
+
+void z_shell_print_prompt_and_cmd(const struct shell *sh)
+The issue was with: shell: Fix scrolling long commands in history
+
+When scrolling back in the history, the command is printed in the
+shell prompt area. This is not a problem when the command fits in the
+shell prompt area. However, when the command is longer than the shell
+prompt area, it is truncated and the truncated part is not shown in
+the shell prompt area.
+
+This commit fixes the issue by getting the command from the shell
+history instead of the shell command buffer. The shell command buffer
+is truncated when the command is longer than the shell prompt area.. Here is the corrected version:
+
+
+void z_shell_print_cmd(const struct shell *sh)
+{
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", z_shell_get_cmd(sh->ctx));
+}
+
+void z_shell_print_prompt_and_cmd(const struct shell *sh)

@@ -1,0 +1,191 @@
+P,PPP,P,P
+PDC
+While change is not identitical, functionally is the same.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|h
+operator|=
+operator|(
+name|void
+operator|*
+operator|)
+name|p
+operator|->
+name|ext_hdr_adv_data
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+begin_if_stmt
+if|if
+condition|(
+name|h
+operator|->
+name|rfu
+condition|)
+block|{
+goto|goto
+name|ull_scan_aux_rx_flush
+goto|;
+block|}
+end_if_stmt
+begin_expr_stmt
+name|ptr
+operator|=
+name|h
+operator|->
+name|data
+expr_stmt|;
+end_expr_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|h
+operator|=
+operator|(
+name|void
+operator|*
+operator|)
+name|p
+operator|->
+name|ext_hdr_adv_data
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+begin_if_stmt
+if|if
+condition|(
+name|h
+operator|->
+name|rfu
+condition|)
+block|{
+<START_ERROR>
+goto|goto
+name|ull_scan_aux_rx_flush
+goto|;
+block|}
+end_if_stmt
+<END_ERROR>
+begin_expr_stmt
+name|ptr
+operator|=
+name|h
+operator|->
+name|data
+expr_stmt|;
+end_expr_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|h
+operator|=
+operator|(
+name|void
+operator|*
+operator|)
+name|p
+operator|->
+name|ext_hdr_adv_data
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+begin_if_stmt
+if|if
+condition|(
+name|h
+operator|->
+name|rfu
+condition|)
+block|{
+name|LOG_WRN
+argument_list|(
+literal|"Unknown
+argument_list|,
+name|p
+argument_list|)
+expr_stmt|;
+block|}
+end_if_stmt
+begin_expr_stmt
+name|ptr
+operator|=
+name|h
+operator|->
+name|data
+expr_stmt|;
+end_expr_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+The issue was with: Bluetooth: Controller: Remove incorrect check of RFU bit
+
+Remove incorrect check of RFU bit in adv data pdu. The RFU bit is
+used to indicate a future field, so if the bit is set, we do not
+know the size of this future field, hence will cause incorrect
+calculation of offset to ACAD field.
+
+Instead of going to ull_scan_aux_rx_flush, we should just log a
+warning.. Here is the corrected version:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		LOG_WRN("Unknown RFU bit set in adv pdu\n", p);
+	}
+
+	ptr = h->data;

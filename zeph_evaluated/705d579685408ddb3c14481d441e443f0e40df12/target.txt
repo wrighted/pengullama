@@ -1,0 +1,142 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/705d579685408ddb3c14481d441e443f0e40df12
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: dma: dma_nxp_edma: allow channel re-configuration. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		}
+		break;
+	case CHAN_STATE_CONFIGURED:
+		if (next != CHAN_STATE_STARTED) {
+			return -EPERM;
+		}
+		break;
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_empty_stmt
+unit|}
+empty_stmt|;
+end_empty_stmt
+begin_case
+case|case
+name|CHAN_STATE_CONFIGURED
+case|:
+end_case
+begin_if_stmt
+if|if
+condition|(
+name|next
+operator|!=
+name|CHAN_STATE_STARTED
+condition|)
+block|{
+return|return
+operator|-
+name|EPERM
+return|;
+block|}
+end_if_stmt
+begin_break
+break|break;
+end_break
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_empty_stmt
+unit|}
+empty_stmt|;
+end_empty_stmt
+begin_case
+case|case
+name|CHAN_STATE_CONFIGURED
+case|:
+end_case
+begin_if_stmt
+if|if
+condition|(
+name|next
+operator|!=
+name|CHAN_STATE_STARTED
+<END_ERROR>
+<START_ERROR>
+condition|)
+block|{
+return|return
+operator|-
+name|EPERM
+return|;
+block|}
+end_if_stmt
+begin_break
+break|break;
+end_break
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_empty_stmt
+unit|}
+empty_stmt|;
+end_empty_stmt
+begin_case
+case|case
+name|CHAN_STATE_CONFIGURED
+case|:
+end_case
+begin_if_stmt
+if|if
+condition|(
+name|next
+operator|!=
+name|CHAN_STATE_STARTED
+operator|&&
+name|next
+operator|!=
+name|CHAN_STATE_CONFIGURED
+condition|)
+block|{
+return|return
+operator|-
+name|EPERM
+return|;
+block|}
+end_if_stmt
+begin_break
+break|break;
+end_break
+
+### Response:
+I corrected the issue in the code you provided:
+
+		}
+		break;
+	case CHAN_STATE_CONFIGURED:
+		if (next != CHAN_STATE_STARTED) {
+			return -EPERM;
+		}
+		break;
+The issue was with: drivers: dma: dma_nxp_edma: allow channel re-configuration
+
+Currently, the state transition function doesn't allow
+the re-configuration of an already configured channel
+(i.e: CHAN_CONFIGURED -> CHAN_CONFIGURED transition). This
+causes problems when using `pulseaudio` and `SOF` because
+the same channel ends up being configured multiple times
+in the beginning due to how pulse seems to work. Logically
+speaking, re-configuring an already configured channel is
+not wrong so this commit solves the issue by allowing
+the CHAN_CONFIGURED -> CHAN_CONFIGURED transition.. Here is the corrected version:
+
+		}
+		break;
+	case CHAN_STATE_CONFIGURED:
+		if (next != CHAN_STATE_STARTED &&
+		    next != CHAN_STATE_CONFIGURED) {
+			return -EPERM;
+		}
+		break;

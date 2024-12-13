@@ -1,0 +1,141 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/0767fd97f8fe69b9adff41dab8fbee1b22fe5143
+
+### Instruction:
+I am having trouble with the following code in relation to sd: sd_ops: fix DISK_IOCTL_CTRL_SYNC return code. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		 * cache flush is not required here
+		 */
+		ret = sdmmc_wait_ready(card);
+	default:
+		ret = -ENOTSUP;
+	}
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+operator|*
+name|cache
+name|flush
+name|is
+operator|not
+name|required
+name|here
+operator|*
+operator|/
+name|ret
+operator|=
+name|sdmmc_wait_ready
+argument_list|(
+name|card
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_default
+default|default:
+end_default
+begin_expr_stmt
+name|ret
+operator|=
+operator|-
+name|ENOTSUP
+expr_stmt|;
+end_expr_stmt
+unit|}
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+operator|*
+name|cache
+name|flush
+name|is
+operator|not
+name|required
+name|here
+operator|*
+operator|/
+name|ret
+operator|=
+name|sdmmc_wait_ready
+argument_list|(
+name|card
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+<END_ERROR>
+<START_ERROR>
+begin_default
+default|default:
+end_default
+begin_expr_stmt
+name|ret
+operator|=
+operator|-
+name|ENOTSUP
+expr_stmt|;
+end_expr_stmt
+unit|}
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+operator|*
+name|cache
+name|flush
+name|is
+operator|not
+name|required
+name|here
+operator|*
+operator|/
+name|ret
+operator|=
+name|sdmmc_wait_ready
+argument_list|(
+name|card
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_break
+break|break;
+end_break
+begin_default
+default|default:
+end_default
+begin_expr_stmt
+name|ret
+operator|=
+operator|-
+name|ENOTSUP
+expr_stmt|;
+end_expr_stmt
+unit|}
+
+### Response:
+I corrected the issue in the code you provided:
+
+		 * cache flush is not required here
+		 */
+		ret = sdmmc_wait_ready(card);
+	default:
+		ret = -ENOTSUP;
+	}
+The issue was with: sd: sd_ops: fix DISK_IOCTL_CTRL_SYNC return code
+
+SD IOCTL handling for DISK_IOCTL_CTRL_SYNC was falling through to the
+default return statement, and returning an error when disk sync
+succeeded. Fix this issue by properly breaking in IOCTL handler.. Here is the corrected version:
+
+		 * cache flush is not required here
+		 */
+		ret = sdmmc_wait_ready(card);
+		break;
+	default:
+		ret = -ENOTSUP;
+	}

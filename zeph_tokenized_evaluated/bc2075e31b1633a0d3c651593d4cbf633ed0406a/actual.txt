@@ -1,0 +1,46 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_block
+block|{
+name|printk
+argument_list|(
+literal|"abort()\n"
+argument_list|)
+expr_stmt|;
+name|k_panic
+argument_list|()
+expr_stmt|;
+block|}
+end_block
+
+### Error location:
+
+begin_block
+block|{
+name|printk
+argument_list|(
+literal|"abort()\n"
+argument_list|)
+expr_stmt|;
+name|k_panic
+argument_list|()
+expr_stmt|;
+block|}
+end_block
+
+### Error correction:
+
+begin_block
+block|{
+name|printk
+argument_list|(
+literal|"abort()\n"
+argument_list|)
+expr_stmt|;
+name|k_panic
+argument_list|()
+expr_stmt|;
+block|}
+end_block

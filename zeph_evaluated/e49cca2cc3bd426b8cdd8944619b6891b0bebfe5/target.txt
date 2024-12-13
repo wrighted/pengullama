@@ -1,0 +1,145 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/e49cca2cc3bd426b8cdd8944619b6891b0bebfe5
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: sensor: Fix adxl345 sample fetch return value. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		data->bufz[s] = sample.z;
+	}
+
+	return samples_count;
+}
+
+static int adxl345_channel_get(const struct device *dev,
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|data
+operator|->
+name|bufz
+index|[
+name|s
+index|]
+operator|=
+name|sample
+operator|.
+name|z
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|}
+name|samples_count
+expr_stmt|;
+end_expr_stmt
+begin_decl
+unit|}
+name|int
+name|adxl345_channel_get
+argument_list|(
+specifier|const
+expr|struct
+name|device
+operator|*
+name|dev
+argument_list|,
+end_decl
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|data
+operator|->
+name|bufz
+index|[
+name|s
+index|]
+operator|=
+name|sample
+operator|.
+name|z
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|}
+<START_ERROR>
+name|samples_count
+<END_ERROR>
+expr_stmt|;
+end_expr_stmt
+begin_decl
+unit|}
+name|int
+name|adxl345_channel_get
+argument_list|(
+specifier|const
+expr|struct
+name|device
+operator|*
+name|dev
+argument_list|,
+end_decl
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|data
+operator|->
+name|bufz
+index|[
+name|s
+index|]
+operator|=
+name|sample
+operator|.
+name|z
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|}
+literal|0
+expr_stmt|;
+end_expr_stmt
+begin_decl
+unit|}
+name|int
+name|adxl345_channel_get
+argument_list|(
+specifier|const
+expr|struct
+name|device
+operator|*
+name|dev
+argument_list|,
+end_decl
+
+### Response:
+I corrected the issue in the code you provided:
+
+		data->bufz[s] = sample.z;
+	}
+
+	return samples_count;
+}
+
+static int adxl345_channel_get(const struct device *dev,
+The issue was with: drivers: sensor: Fix adxl345 sample fetch return value
+
+Fixes the adxl345 accelerometer driver to return zero on sample fetch
+success, as specified by the sensor driver API. Prior to this change,
+the driver incorrectly returned a positive non-zero value on sample
+fetch success, which in turn caused a bus fault getting data with the
+sensor shell.. Here is the corrected version:
+
+		data->bufz[s] = sample.z;
+	}
+
+	return 0;
+}
+
+static int adxl345_channel_get(const struct device *dev,

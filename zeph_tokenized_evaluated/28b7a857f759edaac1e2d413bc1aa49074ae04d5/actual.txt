@@ -1,0 +1,25 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_comment
+comment|/**
+end_comment
+<START_ERROR>
+<END_ERROR>
+
+### Error correction:
+
+Here is the tokenized code with the issue corrected:
+
+begin_comment
+comment|/**
+end_comment

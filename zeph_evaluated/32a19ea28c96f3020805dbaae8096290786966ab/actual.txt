@@ -1,0 +1,166 @@
+P,FPP,P,F
+LCI
+Changed to correct include, but not to the correct value.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to drivers/espi: it8xxx2: Fix mask when SRAM size not the power of 2. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+ */
+#define IT8XXX2_ESPI_H2RAM_POOL_SIZE_MAX 0x1000
+#define IT8XXX2_ESPI_H2RAM_OFFSET_MASK   GENMASK(5, 0)
+#define IT8XXX2_ESPI_H2RAM_BASEADDR_MASK (KB(CONFIG_SRAM_SIZE) - 1)
+
+#if defined(CONFIG_ESPI_PERIPHERAL_ACPI_SHM_REGION)
+#define H2RAM_ACPI_SHM_MAX ((CONFIG_ESPI_IT8XXX2_ACPI_SHM_H2RAM_SIZE) + \
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_expr
+operator|*
+operator|/
+end_expr
+begin_define
+define|#
+directive|define
+name|IT8XXX2_ESPI_H2RAM_POOL_SIZE_MAX
+value|0x1000
+end_define
+begin_define
+define|#
+directive|define
+name|IT8XXX2_ESPI_H2RAM_OFFSET_MASK
+value|GENMASK(5,
+end_define
+begin_define
+define|#
+directive|define
+name|IT8XXX2_ESPI_H2RAM_BASEADDR_MASK
+value|(KB(CONFIG_SRAM_SIZE)
+end_define
+begin_if
+if|#
+directive|if
+name|defined
+argument_list|(
+name|CONFIG_ESPI_PERIPHERAL_ACPI_SHM_REGION
+argument_list|)
+end_if
+begin_define
+define|#
+directive|define
+name|H2RAM_ACPI_SHM_MAX
+value|((CONFIG_ESPI_IT8XXX2_ACPI_SHM_H2RAM_SIZE)
+end_define
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr
+operator|*
+operator|/
+end_expr
+begin_define
+define|#
+directive|define
+name|IT8XXX2_ESPI_H2RAM_POOL_SIZE_MAX
+value|0x1000
+end_define
+begin_define
+define|#
+directive|define
+name|IT8XXX2_ESPI_H2RAM_OFFSET_MASK
+value|GENMASK(5,
+end_define
+begin_define
+define|#
+directive|define
+name|IT8XXX2_ESPI_H2RAM_BASEADDR_MASK
+<START_ERROR>
+value|(KB(CONFIG_SRAM_SIZE)
+<END_ERROR>
+end_define
+begin_if
+if|#
+directive|if
+name|defined
+argument_list|(
+name|CONFIG_ESPI_PERIPHERAL_ACPI_SHM_REGION
+argument_list|)
+end_if
+begin_define
+define|#
+directive|define
+name|H2RAM_ACPI_SHM_MAX
+value|((CONFIG_ESPI_IT8XXX2_ACPI_SHM_H2RAM_SIZE)
+end_define
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr
+operator|*
+operator|/
+end_expr
+begin_define
+define|#
+directive|define
+name|IT8XXX2_ESPI_H2RAM_POOL_SIZE_MAX
+value|0x1000
+end_define
+begin_define
+define|#
+directive|define
+name|IT8XXX2_ESPI_H2RAM_OFFSET_MASK
+value|GENMASK(5,
+end_define
+begin_define
+define|#
+directive|define
+name|IT8XXX2_ESPI_H2RAM_BASEADDR_MASK
+value|(CONFIG_SRAM_SIZE
+end_define
+begin_if
+if|#
+directive|if
+name|defined
+argument_list|(
+name|CONFIG_ESPI_PERIPHERAL_ACPI_SHM_REGION
+argument_list|)
+end_if
+begin_define
+define|#
+directive|define
+name|H2RAM_ACPI_SHM_MAX
+value|((CONFIG_ESPI_IT8XXX2_ACPI_SHM_H2RAM_SIZE)
+end_define
+
+### Response:
+I corrected the issue in the code you provided:
+
+ */
+#define IT8XXX2_ESPI_H2RAM_POOL_SIZE_MAX 0x1000
+#define IT8XXX2_ESPI_H2RAM_OFFSET_MASK   GENMASK(5, 0)
+#define IT8XXX2_ESPI_H2RAM_BASEADDR_MASK (KB(CONFIG_SRAM_SIZE) - 1)
+
+#if defined(CONFIG_ESPI_PERIPHERAL_ACPI_SHM_REGION)
+#define H2RAM_ACPI_SHM_MAX ((CONFIG_ESPI_IT8XXX2_ACPI_SHM_H2RAM_SIZE) + \
+The issue was with: drivers/espi: it8xxx2: Fix mask when SRAM size not the power of 2
+
+The mask for the SRAM base address is incorrect when the SRAM size is not
+a power of 2. This fix the issue by using the SRAM size directly in the
+mask, instead of the KB() macro.. Here is the corrected version:
+
+ */
+#define IT8XXX2_ESPI_H2RAM_POOL_SIZE_MAX 0x1000
+#define IT8XXX2_ESPI_H2RAM_OFFSET_MASK   GENMASK(5, 0)
+#define IT8XXX2_ESPI_H2RAM_BASEADDR_MASK (CONFIG_SRAM_SIZE - 1)
+
+#if defined(CONFIG_ESPI_PERIPHERAL_ACPI_SHM_REGION)
+#define H2RAM_ACPI_SHM_MAX ((CONFIG_ESPI_IT8XXX2_ACPI_SHM_H2RAM_SIZE) + \

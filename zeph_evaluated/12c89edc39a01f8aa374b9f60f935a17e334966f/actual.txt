@@ -1,0 +1,119 @@
+F,FFF,P,F
+PDC
+Change is in same area, but functionally different.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: ascs: Fix return without state change nor response. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		err = ascs_disconnect_stream(stream);
+		if (err < 0) {
+			LOG_ERR("Failed to disconnect stream %p: %d", stream, err);
+			return;
+		}
+	}
+
+
+### Tokenized:
+
+begin_expr_stmt
+name|err
+operator|=
+name|ascs_disconnect_stream
+argument_list|(
+name|stream
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|err
+operator|<
+literal|0
+condition|)
+block|{
+name|LOG_ERR
+argument_list|(
+literal|"Failed
+argument_list|,
+name|stream
+argument_list|,
+name|err
+argument_list|)
+expr_stmt|;
+return|return;
+block|}
+end_if_stmt
+unit|}
+
+### Error location:
+I have identified the issue in the code you provided. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+<START_ERROR>
+		err = ascs_disconnect_stream(stream);
+		if (err < 0) {
+			LOG_ERR("Failed to disconnect stream %p: %d", stream, err);
+			return;
+		}
+	}
+
+### Error correction:
+Here is the tokenized version of the code with the issue corrected:
+
+begin_expr_stmt
+name|err
+operator|=
+name|ascs_disconnect_stream
+argument_list|(
+name|stream
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|err
+operator|<
+literal|0
+condition|)
+block|{
+name|LOG_ERR
+argument_list|(
+literal|"Failed
+argument_list|,
+name|stream
+argument_list|,
+name|err
+argument_list|)
+expr_stmt|;
+return|return;
+block|}
+end_if_stmt
+unit|}
+
+### Response:
+I corrected the issue in the code you provided:
+
+		err = ascs_disconnect_stream(stream);
+		if (err < 0) {
+			LOG_ERR("Failed to disconnect stream %p: %d", stream, err);
+			return;
+		}
+	}
+
+The issue was with: Bluetooth: ascs: Fix return without state change nor response
+
+Return -EALREADY instead of returning without any response if the
+stream is already disconnected.. Here is the corrected version:
+
+		err = ascs_disconnect_stream(stream);
+		if (err < 0) {
+			LOG_ERR("Failed to disconnect stream %p: %d", stream, err);
+			return -EALREADY;
+		}
+	}

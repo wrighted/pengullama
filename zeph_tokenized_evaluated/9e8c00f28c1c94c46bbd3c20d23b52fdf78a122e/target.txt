@@ -1,0 +1,75 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/9e8c00f28c1c94c46bbd3c20d23b52fdf78a122e
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_return
+return|return
+name|err
+return|;
+end_return
+begin_block
+unit|}
+block|{
+end_block
+begin_comment
+comment|/*
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_return
+return|return
+name|err
+return|;
+end_return
+<START_ERROR>
+begin_block
+unit|}
+block|{
+end_block
+<END_ERROR>
+begin_comment
+comment|/*
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_return
+return|return
+name|err
+return|;
+end_return
+begin_expr_stmt
+unit|}
+operator|(
+operator|!
+name|LL_RTC_IsActiveFlag_INITS
+argument_list|(
+name|RTC
+argument_list|)
+operator|)
+block|{
+comment|/*
+name|k_mutex_unlock
+argument_list|(
+operator|&
+name|data
+operator|->
+name|lock
+argument_list|)
+block|;
+return|return
+operator|-
+name|ENODATA
+return|;
+block|}
+end_expr_stmt
+begin_do
+do|do
+block|{
+end_do
+begin_comment
+comment|/*
+end_comment

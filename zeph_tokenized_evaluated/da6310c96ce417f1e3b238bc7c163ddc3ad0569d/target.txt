@@ -1,0 +1,63 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/da6310c96ce417f1e3b238bc7c163ddc3ad0569d
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_function
+name|void
+name|soc_early_init_hook
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+name|clock_init
+argument_list|()
+expr_stmt|;
+block|}
+end_function
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_function
+name|void
+name|soc_early_init_hook
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+<END_ERROR>
+<START_ERROR>
+name|clock_init
+argument_list|()
+expr_stmt|;
+block|}
+end_function
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_function
+name|void
+name|soc_early_init_hook
+parameter_list|(
+name|void
+parameter_list|)
+block|{
+ifdef|#
+directive|ifdef
+name|CONFIG_TEMP_KINETIS
+comment|/*
+name|PMC
+operator|->
+name|REGSC
+operator||=
+name|PMC_REGSC_BGBE_MASK
+expr_stmt|;
+endif|#
+directive|endif
+comment|/*
+name|clock_init
+argument_list|()
+expr_stmt|;
+block|}
+end_function

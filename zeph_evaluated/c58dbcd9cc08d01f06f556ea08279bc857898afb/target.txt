@@ -1,0 +1,166 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/c58dbcd9cc08d01f06f556ea08279bc857898afb
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: charger: Corrects typo in property documentation. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	 * Configuration to issue a notification to the system based on the input current
+	 * level and timing
+	 *
+	 * Value should be of type struct charger_input_current_notifier
+	 */
+	CHARGER_PROP_INPUT_CURRENT_NOTIFICATION,
+	/** Reserved to demark end of common charger properties */
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr
+operator|*
+name|Configuration
+name|to
+name|issue
+name|a
+name|notification
+name|to
+name|the
+name|system
+name|based
+name|on
+name|the
+name|input
+name|current
+operator|*
+name|level
+operator|and
+name|timing
+operator|*
+operator|*
+name|Value
+name|should
+name|be
+name|of
+name|type
+expr|struct
+name|charger_input_current_notifier
+operator|*
+operator|/
+name|CHARGER_PROP_INPUT_CURRENT_NOTIFICATION
+end_expr
+begin_operator
+operator|,
+end_operator
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr
+operator|*
+name|Configuration
+name|to
+name|issue
+name|a
+name|notification
+name|to
+name|the
+name|system
+name|based
+name|on
+name|the
+name|input
+name|current
+operator|*
+name|level
+operator|and
+name|timing
+operator|*
+operator|*
+name|Value
+name|should
+name|be
+name|of
+name|type
+expr|struct
+<START_ERROR>
+name|charger_input_current_notifier
+<END_ERROR>
+operator|*
+operator|/
+name|CHARGER_PROP_INPUT_CURRENT_NOTIFICATION
+end_expr
+begin_operator
+operator|,
+end_operator
+begin_comment
+comment|/**
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr
+operator|*
+name|Configuration
+name|to
+name|issue
+name|a
+name|notification
+name|to
+name|the
+name|system
+name|based
+name|on
+name|the
+name|input
+name|current
+operator|*
+name|level
+operator|and
+name|timing
+operator|*
+operator|*
+name|Value
+name|should
+name|be
+name|of
+name|type
+expr|struct
+name|charger_current_notifier
+operator|*
+operator|/
+name|CHARGER_PROP_INPUT_CURRENT_NOTIFICATION
+end_expr
+begin_operator
+operator|,
+end_operator
+begin_comment
+comment|/**
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+	 * Configuration to issue a notification to the system based on the input current
+	 * level and timing
+	 *
+	 * Value should be of type struct charger_input_current_notifier
+	 */
+	CHARGER_PROP_INPUT_CURRENT_NOTIFICATION,
+	/** Reserved to demark end of common charger properties */
+The issue was with: drivers: charger: Corrects typo in property documentation
+
+Corrects expected type mentioned in the documentation of the
+CHARGER_PROP_INPUT_CURRENT_NOTIFICATION.. Here is the corrected version:
+
+	 * Configuration to issue a notification to the system based on the input current
+	 * level and timing
+	 *
+	 * Value should be of type struct charger_current_notifier
+	 */
+	CHARGER_PROP_INPUT_CURRENT_NOTIFICATION,
+	/** Reserved to demark end of common charger properties */

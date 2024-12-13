@@ -1,0 +1,158 @@
+P,PFP,P,P
+PAC
+Functionally the same, but more complicated.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: stm32-rtc: return -ENODATA when RTC is uninitialized. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		return err;
+	}
+
+	do {
+		/* read date, time and subseconds and relaunch if a day increment occurred
+		 * while doing so as it will result in an erroneous result otherwise
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_return
+return|return
+name|err
+return|;
+end_return
+begin_expr_stmt
+unit|}
+operator|(
+operator|/
+comment|/*
+operator|/
+name|RTC_Date
+operator|,
+name|RTC_Time
+operator|,
+name|RTC_SubSec
+operator|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_return
+return|return
+name|err
+return|;
+end_return
+begin_expr_stmt
+unit|}
+operator|(
+operator|/
+comment|/*
+operator|/
+name|RTC_Date
+operator|,
+name|RTC_Time
+operator|,
+name|RTC_SubSec
+operator|)
+expr_stmt|;
+end_expr_stmt
+<START_ERROR>
+begin_comment
+comment|/*
+end_comment
+<END_ERROR>
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_return
+return|return
+name|err
+return|;
+end_return
+begin_expr_stmt
+unit|}
+operator|(
+operator|/
+comment|/*
+operator|/
+name|RTC_Date
+operator|,
+name|RTC_Time
+operator|,
+name|RTC_SubSec
+operator|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|RTC_Date
+operator|.
+name|flags
+operator|==
+name|RTC_FLAG_DATE_UNINITIALIZED
+operator|||
+name|RTC_Time
+operator|.
+name|flags
+operator|==
+name|RTC_FLAG_TIME_UNINITIALIZED
+operator|||
+name|RTC_SubSec
+operator|.
+name|flags
+operator|==
+name|RTC_FLAG_SUBSECONDS_UNINITIALIZED
+condition|)
+block|{
+return|return
+operator|-
+name|ENODATA
+return|;
+block|}
+end_if_stmt
+begin_comment
+comment|/*
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+		return err;
+	}
+
+	do {
+		/* read date, time and subseconds and relaunch if a day increment occurred
+		 * while doing so as it will result in an erroneous result otherwise
+The issue was with: drivers: stm32-rtc: return -ENODATA when RTC is uninitialized
+
+The STM32 RTC driver will return an error when the RTC is not
+initialized. The error code is not propagated to the caller and
+this may result in an unexpected behavior.
+
+This commit changes the driver to return -ENODATA when the RTC is
+not initialized.. Here is the corrected version:
+
+		return err;
+	}
+
+	if (RTC_Date.flags == RTC_FLAG_DATE_UNINITIALIZED ||
+	    RTC_Time.flags == RTC_FLAG_TIME_UNINITIALIZED ||
+	    RTC_SubSec.flags == RTC_FLAG_SUBSECONDS_UNINITIALIZED) {
+		return -ENODATA;
+	}
+
+	do {
+		/* read date, time and subseconds and relaunch if a day increment occurred
+		 * while doing so as it will result in an erroneous result otherwise

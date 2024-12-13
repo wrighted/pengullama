@@ -1,0 +1,126 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/2a6169e2feb9978a01857bf548a5d05c3108290b
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Fix coverity issue 340852. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	cte_info.type = df_cfg->cte_type;
+	cte_info.time = df_cfg->cte_length;
+
+	/* Note: ULL_ADV_PDU_EXTRA_DATA_ALLOC_ALWAYS is just information that extra_data
+	 * is required in case of this ull_adv_sync_pdu_alloc.
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|cte_info
+operator|.
+name|type
+operator|=
+name|df_cfg
+operator|->
+name|cte_type
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|cte_info
+operator|.
+name|time
+operator|=
+name|df_cfg
+operator|->
+name|cte_length
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|cte_info
+operator|.
+name|type
+operator|=
+name|df_cfg
+operator|->
+name|cte_type
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|cte_info
+operator|.
+name|time
+operator|=
+name|df_cfg
+operator|->
+name|cte_length
+<END_ERROR>
+expr_stmt|;
+end_expr_stmt
+<START_ERROR>
+begin_comment
+comment|/*
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|cte_info
+operator|.
+name|type
+operator|=
+name|df_cfg
+operator|->
+name|cte_type
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|cte_info
+operator|.
+name|time
+operator|=
+name|df_cfg
+operator|->
+name|cte_length
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|cte_info
+operator|.
+name|rfu
+operator|=
+literal|0U
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	cte_info.type = df_cfg->cte_type;
+	cte_info.time = df_cfg->cte_length;
+
+	/* Note: ULL_ADV_PDU_EXTRA_DATA_ALLOC_ALWAYS is just information that extra_data
+	 * is required in case of this ull_adv_sync_pdu_alloc.
+The issue was with: Bluetooth: Controller: Fix coverity issue 340852
+
+Fix coverity issue 340852, Uninitialized scalar variable.. Here is the corrected version:
+
+
+	cte_info.type = df_cfg->cte_type;
+	cte_info.time = df_cfg->cte_length;
+	cte_info.rfu = 0U;
+
+	/* Note: ULL_ADV_PDU_EXTRA_DATA_ALLOC_ALWAYS is just information that extra_data
+	 * is required in case of this ull_adv_sync_pdu_alloc.

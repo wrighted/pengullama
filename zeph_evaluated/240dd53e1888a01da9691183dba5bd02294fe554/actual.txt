@@ -1,0 +1,168 @@
+P,FFF,F,F
+CO
+Added un-needed comments instead of fixing typo.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to sys: arch_interface: fix doc in arch_user_mode_enter. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+size_t arch_virt_region_align(uintptr_t phys, size_t size);
+
+/**
+* Perform a one-way transition from supervisor to kernel mode.
+ *
+ * Implementations of this function must do the following:
+ *
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+<END_ERROR>
+<START_ERROR>
+begin_comment
+comment|/**
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+begin_function_decl
+specifier|static
+specifier|inline
+name|void
+name|arch_user_mode_enter
+parameter_list|(
+name|void
+modifier|*
+name|kernel_sp
+parameter_list|,
+name|void
+modifier|*
+name|kernel_ep
+parameter_list|,
+name|void
+modifier|*
+name|user_sp
+parameter_list|,
+name|void
+modifier|*
+name|user_ep
+parameter_list|,
+name|void
+modifier|*
+name|kernel_stack
+parameter_list|,
+name|void
+modifier|*
+name|user_stack
+parameter_list|,
+name|void
+modifier|*
+name|switch_stack
+parameter_list|,
+name|void
+modifier|*
+name|switch_sp
+parameter_list|,
+name|void
+modifier|*
+name|switch_ep
+parameter_list|,
+name|void
+modifier|*
+name|switch_stack_top
+parameter_list|,
+name|void
+modifier|*
+name|switch_stack_bottom
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+size_t arch_virt_region_align(uintptr_t phys, size_t size);
+
+/**
+* Perform a one-way transition from supervisor to kernel mode.
+ *
+ * Implementations of this function must do the following:
+ *
+The issue was with: sys: arch_interface: fix doc in arch_user_mode_enter
+
+Fixes a doc issue in arch_user_mode_enter.. Here is the corrected version:
+
+size_t arch_virt_region_align(uintptr_t phys, size_t size);
+
+/**
+* Perform a one-way transition from supervisor to kernel mode.
+ *
+ * Implementations of this function must do the following:
+ *
+ * - Ensure that the kernel stack is aligned to a page boundary.
+ * - Ensure that the user stack is aligned to a page boundary.
+ * - Switch to supervisor mode.
+ * - Perform a one-way transition from supervisor to kernel mode.
+ *
+ * Note that the switch stack can be used to temporarily store the
+ * supervisor state while the supervisor mode is entered. The switch
+ * stack is aligned to a page boundary.
+ *
+ * Note that the switch stack can be used to temporarily store the
+ * supervisor state while the supervisor mode is entered. The switch
+ * stack is aligned to a page boundary.

@@ -1,0 +1,46 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_return
+return|return
+name|err
+return|;
+end_return
+begin_block
+unit|}
+block|{
+end_block
+begin_comment
+comment|/*
+end_comment
+
+### Error location:
+
+begin_return
+return|return
+name|err
+return|;
+end_return
+begin_block
+unit|}
+block|{
+end_block
+begin_comment
+comment|/*
+end_comment
+
+### Error correction:
+
+begin_return
+return|return
+name|err
+return|;
+end_return
+begin_block
+unit|}
+block|{
+end_block
+begin_comment
+comment|/*
+end_comment

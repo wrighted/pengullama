@@ -1,0 +1,90 @@
+P,PPP,P,P
+PAE
+Matches expected.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to libc/minimal: Use CODE_UNREACHABLE in abort(). Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+{
+	printk("abort()\n");
+	k_panic();
+}
+
+### Tokenized:
+
+begin_block
+block|{
+name|printk
+argument_list|(
+literal|"abort()"
+argument_list|)
+expr_stmt|;
+name|k_panic
+argument_list|()
+expr_stmt|;
+block|}
+end_block
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_block
+block|{
+name|printk
+argument_list|(
+literal|"abort()"
+argument_list|)
+expr_stmt|;
+name|k_panic
+argument_list|()
+expr_stmt|;
+block|}
+end_block
+<END_ERROR>
+<START_ERROR>
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_block
+block|{
+name|printk
+argument_list|(
+literal|"abort()"
+argument_list|)
+expr_stmt|;
+name|k_panic
+argument_list|()
+expr_stmt|;
+block|}
+end_block
+begin_expr_stmt
+unit|}
+operator|(
+name|CODE_UNREACHABLE
+operator|)
+block|;
+end_expr_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+{
+	printk("abort()\n");
+	k_panic();
+}
+The issue was with: libc/minimal: Use CODE_UNREACHABLE in abort()
+
+Use CODE_UNREACHABLE in abort() to avoid compilation warnings.. Here is the corrected version:
+
+{
+	printk("abort()\n");
+	k_panic();
+
+	CODE_UNREACHABLE;
+}

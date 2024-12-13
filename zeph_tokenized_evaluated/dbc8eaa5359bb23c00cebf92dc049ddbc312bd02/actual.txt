@@ -1,0 +1,49 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|can_remove_rx_filter
+argument_list|(
+name|can_dev
+argument_list|,
+name|filter_id
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+unit|}
+comment|/**
+end_comment
+
+### Error location:
+
+begin_expr_stmt
+name|can_remove_rx_filter
+argument_list|(
+name|can_dev
+argument_list|,
+name|filter_id
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+unit|}
+comment|/**
+end_comment
+
+### Error correction:
+
+begin_expr_stmt
+name|can_remove_rx_filter
+argument_list|(
+name|can_dev
+argument_list|,
+name|filter_id
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+unit|}
+comment|/**
+end_comment

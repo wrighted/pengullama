@@ -1,0 +1,231 @@
+F,FFF,F,F
+LCE
+Did not find problem, added unecessary code.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to net: shell: Clarify the name of the virtual interface. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+			name = "<unknown>";
+		}
+
+		PR("Name      : %s\n", name);
+
+		orig_iface = net_virtual_get_iface(iface);
+		if (orig_iface == NULL) {
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|name
+operator|=
+literal|"<unknown>"
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|}
+operator|(
+literal|"Name
+operator|,
+name|name
+operator|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|orig_iface
+operator|=
+name|net_virtual_get_iface
+argument_list|(
+name|iface
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|orig_iface
+operator|==
+name|NULL
+condition|)
+block|{
+end_if_stmt
+
+### Error location:
+
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|name
+operator|=
+literal|"<unknown>"
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|}
+operator|(
+literal|"Name
+operator|,
+name|name
+operator|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|orig_iface
+operator|=
+name|net_virtual_get_iface
+argument_list|(
+name|iface
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|orig_iface
+operator|==
+name|NULL
+condition|)
+block|{
+end_if_stmt
+<END_ERROR>
+<START_ERROR>
+
+### Error correction:
+
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|name
+operator|=
+literal|"<unknown>"
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|}
+operator|(
+literal|"Name
+operator|,
+name|name
+operator|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|orig_iface
+operator|=
+name|net_virtual_get_iface
+argument_list|(
+name|iface
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|orig_iface
+operator|==
+name|NULL
+condition|)
+block|{
+end_if_stmt
+begin_return
+return|return
+name|iface
+return|;
+end_return
+begin_return
+return|return
+name|NULL
+return|;
+end_return
+begin_return
+return|return
+name|orig_iface
+return|;
+end_return
+begin_comment
+comment|/*
+end_comment
+begin_expr_stmt
+name|PR
+argument_list|(
+literal|"Name
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|net_if_set_iface
+argument_list|(
+name|orig_iface
+argument_list|,
+name|iface
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+begin_expr_stmt
+name|net_if_set_iface
+argument_list|(
+name|orig_iface
+argument_list|,
+name|iface
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+begin_expr_stmt
+name|net_if_set_iface
+argument_list|(
+name|orig_iface
+argument_list|,
+name|iface
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+
+### Response:
+
+I corrected the issue in the code you provided:
+
+			name = "<unknown>";
+		}
+
+		PR("Name      : %s\n", name);
+
+		orig_iface = net_virtual_get_iface(iface);
+		if (orig_iface == NULL) {
+The issue was with: net: shell: Clarify the name of the virtual interface
+
+When the interface is not found, the name of the virtual
+interface should be "<unknown>" instead of "<null>". Here is the corrected version:
+
+			name = "<unknown>";
+		}
+
+		PR("Name      : %s\n", name);
+
+		orig_iface = net_virtual_get_iface(iface);
+		if (orig_iface == NULL) {
+			return iface;
+		}
+
+		return NULL;
+	}
+
+	PR("Name      : %s\n", orig_iface->name);
+
+	net_if_set_iface(orig_iface, iface);
+
+	/* If the interface is already in the same state, do nothing */
+	net_if_set_iface(orig_iface, iface);
+
+	net_if_set_iface(orig_iface, iface);

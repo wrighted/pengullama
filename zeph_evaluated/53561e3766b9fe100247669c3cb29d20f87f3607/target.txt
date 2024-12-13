@@ -1,0 +1,125 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/53561e3766b9fe100247669c3cb29d20f87f3607
+
+### Instruction:
+I am having trouble with the following code in relation to net: dns: Fix timeout calculation with DNS retransmissions. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	}
+
+again:
+	timeout_ms = k_ticks_to_ms_floor32(timeout.ticks);
+
+	NET_DBG("Timeout %d", timeout_ms);
+
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+unit|}
+name|timeout_ms
+operator|=
+name|k_ticks_to_ms_floor32
+argument_list|(
+name|timeout
+operator|.
+name|ticks
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|NET_DBG
+argument_list|(
+literal|"Timeout
+argument_list|,
+name|timeout_ms
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+unit|}
+name|timeout_ms
+operator|=
+<START_ERROR>
+name|k_ticks_to_ms_floor32
+<END_ERROR>
+argument_list|(
+name|timeout
+operator|.
+name|ticks
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|NET_DBG
+argument_list|(
+literal|"Timeout
+argument_list|,
+name|timeout_ms
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+unit|}
+name|timeout_ms
+operator|=
+name|k_ticks_to_ms_ceil32
+argument_list|(
+name|timeout
+operator|.
+name|ticks
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|NET_DBG
+argument_list|(
+literal|"Timeout
+argument_list|,
+name|timeout_ms
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+	}
+
+again:
+	timeout_ms = k_ticks_to_ms_floor32(timeout.ticks);
+
+	NET_DBG("Timeout %d", timeout_ms);
+
+The issue was with: net: dns: Fix timeout calculation with DNS retransmissions
+
+With recently introduced DNS retransmission mechanism, a certain bug
+could occur when calculating query timeout.
+
+If the time until the final DNS timeout (as indicated by
+CONFIG_NET_SOCKETS_DNS_TIMEOUT) was less than 1 millisecond, the actual
+millisecond timeout value was rounded down, resulting in 0 ms timeout.
+This in order was interpreted as invalid argument by dns_get_addr_info()
+function, so in result, instead of reporting query timeout, the function
+reported invalid argument error.
+
+Fix this by rounding the millisecond timeout up, instead of down, so
+that in any case, if the final timeout is not due, we always provide
+non-zero timeout to dns_get_addr_info().. Here is the corrected version:
+
+	}
+
+again:
+	timeout_ms = k_ticks_to_ms_ceil32(timeout.ticks);
+
+	NET_DBG("Timeout %d", timeout_ms);

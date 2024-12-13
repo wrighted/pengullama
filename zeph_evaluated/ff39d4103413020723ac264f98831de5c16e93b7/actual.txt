@@ -1,0 +1,188 @@
+F,FFF,F,F
+LCC
+Change was not related.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: ssp: correct pairing failed callback. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+		SYS_SLIST_FOR_EACH_CONTAINER_SAFE(&bt_auth_info_cbs, listener,
+						  next, node) {
+			if (listener->pairing_complete) {
+				listener->pairing_complete(conn, status);
+			}
+		}
+	}
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|SYS_SLIST_FOR_EACH_CONTAINER_SAFE
+argument_list|(
+operator|&
+name|bt_auth_info_cbs
+argument_list|,
+name|listener
+argument_list|,
+name|next
+argument_list|,
+name|node
+argument_list|)
+end_expr_stmt
+begin_block
+block|{
+if|if
+condition|(
+name|listener
+operator|->
+name|pairing_complete
+condition|)
+block|{
+name|listener
+operator|->
+name|pairing_complete
+argument_list|(
+name|conn
+argument_list|,
+name|status
+argument_list|)
+expr_stmt|;
+block|}
+end_block
+begin_expr_stmt
+unit|}
+operator|(
+name|conn
+operator|,
+name|status
+operator|)
+block|}
+end_expr_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|SYS_SLIST_FOR_EACH_CONTAINER_SAFE
+argument_list|(
+operator|&
+name|bt_auth_info_cbs
+argument_list|,
+name|listener
+argument_list|,
+name|next
+argument_list|,
+name|node
+argument_list|)
+end_expr_stmt
+begin_block
+block|{
+if|if
+condition|(
+name|listener
+operator|->
+name|pairing_complete
+condition|)
+block|{
+name|listener
+operator|->
+name|pairing_complete
+argument_list|(
+<START_ERROR>
+name|conn
+<END_ERROR>
+argument_list|,
+name|status
+argument_list|)
+expr_stmt|;
+block|}
+end_block
+begin_expr_stmt
+unit|}
+operator|(
+name|conn
+operator|,
+name|status
+operator|)
+block|}
+end_expr_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|SYS_SLIST_FOR_EACH_CONTAINER_SAFE
+argument_list|(
+operator|&
+name|bt_auth_info_cbs
+argument_list|,
+name|listener
+argument_list|,
+name|next
+argument_list|,
+name|node
+argument_list|)
+end_expr_stmt
+begin_block
+block|{
+if|if
+condition|(
+name|listener
+operator|->
+name|pairing_complete
+condition|)
+block|{
+name|listener
+operator|->
+name|pairing_complete
+argument_list|(
+name|conn
+operator|->
+name|remote
+argument_list|,
+name|status
+argument_list|)
+expr_stmt|;
+block|}
+end_block
+begin_expr_stmt
+unit|}
+operator|(
+name|conn
+operator|,
+name|status
+operator|)
+block|}
+end_expr_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+		SYS_SLIST_FOR_EACH_CONTAINER_SAFE(&bt_auth_info_cbs, listener,
+						  next, node) {
+			if (listener->pairing_complete) {
+				listener->pairing_complete(conn, status);
+			}
+		}
+	}
+The issue was with: Bluetooth: ssp: correct pairing failed callback
+
+The callback should be called with the remote address and not the
+connection handle.. Here is the corrected version:
+
+
+		SYS_SLIST_FOR_EACH_CONTAINER_SAFE(&bt_auth_info_cbs, listener,
+						  next, node) {
+			if (listener->pairing_complete) {
+				listener->pairing_complete(conn->remote, status);
+			}
+		}
+	}

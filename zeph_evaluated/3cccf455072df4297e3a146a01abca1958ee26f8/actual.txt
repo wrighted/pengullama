@@ -1,0 +1,152 @@
+P,FFP,P,PP
+LCV
+Correctly identified and explained error, failed to fix typo.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to cache: aspeed: Fix typo of CACHE_ENABLE bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	syscon_read_reg(dev, CACHE_FUNC_CTRL_REG, &ctrl);
+
+	return (ctrl & CCHE_EANABLE)? CACHE_LINE_SIZE : 0;
+}
+#endif /* CONFIG_ICACHE_LINE_SIZE_DETECT */
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|syscon_read_reg
+argument_list|(
+name|dev
+argument_list|,
+name|CACHE_FUNC_CTRL_REG
+argument_list|,
+operator|&
+name|ctrl
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_return
+return|return
+operator|(
+name|ctrl
+operator|&
+name|CCHE_EANABLE
+operator|)
+condition|?
+name|CACHE_LINE_SIZE
+else|:
+literal|0
+return|;
+end_return
+begin_endif
+unit|}
+endif|#
+directive|endif
+end_endif
+begin_comment
+comment|/*
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|syscon_read_reg
+argument_list|(
+name|dev
+argument_list|,
+name|CACHE_FUNC_CTRL_REG
+argument_list|,
+operator|&
+name|ctrl
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_return
+return|return
+operator|(
+name|ctrl
+operator|&
+<START_ERROR>
+name|CCHE_EANABLE
+<END_ERROR>
+operator|)
+condition|?
+name|CACHE_LINE_SIZE
+else|:
+literal|0
+return|;
+end_return
+begin_endif
+unit|}
+endif|#
+directive|endif
+end_endif
+begin_comment
+comment|/*
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|syscon_read_reg
+argument_list|(
+name|dev
+argument_list|,
+name|CACHE_FUNC_CTRL_REG
+argument_list|,
+operator|&
+name|ctrl
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_return
+return|return
+operator|(
+name|ctrl
+operator|&
+name|CCHE_EENABLE
+operator|)
+condition|?
+name|CACHE_LINE_SIZE
+else|:
+literal|0
+return|;
+end_return
+begin_endif
+unit|}
+endif|#
+directive|endif
+end_endif
+begin_comment
+comment|/*
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	syscon_read_reg(dev, CACHE_FUNC_CTRL_REG, &ctrl);
+
+	return (ctrl & CCHE_EANABLE)? CACHE_LINE_SIZE : 0;
+}
+#endif /* CONFIG_ICACHE_LINE_SIZE_DETECT */
+The issue was with: cache: aspeed: Fix typo of CACHE_ENABLE bit
+
+This patch fixes a typo in the CACHE_ENABLE bit definition.. Here is the corrected version:
+
+
+	syscon_read_reg(dev, CACHE_FUNC_CTRL_REG, &ctrl);
+
+	return (ctrl & CCHE_EENABLE)? CACHE_LINE_SIZE : 0;
+}
+#endif /* CONFIG_ICACHE_LINE_SIZE_DETECT */

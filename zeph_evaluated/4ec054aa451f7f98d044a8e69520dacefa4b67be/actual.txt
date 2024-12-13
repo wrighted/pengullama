@@ -1,0 +1,141 @@
+P,FFF,F,F
+LCC
+Located error tokens but change was not similiar.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: can: mcux: flexcan: add missing mutex unlock in error path. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	}
+
+	if (alloc == -ENOSPC) {
+		return alloc;
+	}
+
+	mcux_flexcan_can_filter_to_mbconfig(filter, &data->rx_cbs[alloc].mb_config,
+		alloc = -ENOSPC;
+	}
+
+	k_mutex_unlock(&data->rx_mutex);
+
+	return alloc;
+
+### Tokenized:
+
+begin_expr_stmt
+unit|}
+operator|(
+name|alloc
+operator|==
+operator|-
+name|ENOSPC
+operator|)
+block|{
+return|return
+name|alloc
+return|;
+block|}
+end_expr_stmt
+begin_expr_stmt
+unit|mcux_flexcan_can_filter_to_mbconfig
+argument_list|(
+name|filter
+argument_list|,
+operator|&
+name|data
+operator|->
+name|rx_cbs
+index|[
+name|alloc
+index|]
+operator|.
+name|mb_config
+argument_list|,
+name|alloc
+operator|=
+operator|-
+name|ENOSPC
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|k_mutex_unlock
+argument_list|(
+operator|&
+name|data
+operator|->
+name|rx_mutex
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_return
+return|return
+name|alloc
+return|;
+end_return
+
+### Error location:
+I have identified the issue in the code you provided. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+<START_ERROR>
+	}
+
+	if (alloc == -ENOSPC) {
+		return alloc;
+	}
+
+	mcux_flexcan_can_filter_to_mbconfig(filter, &data->rx_cbs[alloc].mb_config,
+		alloc = -ENOSPC;
+	}
+
+<END_ERROR>
+	k_mutex_unlock(&data->rx_mutex);
+
+	return alloc;
+
+### Error correction:
+Here is the corrected version:
+
+	}
+
+	if (alloc == -ENOSPC) {
+		return alloc;
+	}
+
+	mcux_flexcan_can_filter_to_mbconfig(filter, &data->rx_cbs[alloc].mb_config,
+		alloc = -ENOSPC;
+	}
+
+	k_mutex_unlock(&data->rx_mutex);
+
+	if (k_mutex_unlock(&data->rx_mutex) < 0) {
+		return -EIO;
+	}
+
+	return alloc;
+
+### Response:
+I corrected the issue in the code you provided. The issue was with: drivers: can: mcux: flexcan: add missing mutex unlock in error path
+
+If k_mutex_unlock fails, return error to user.. Here is the corrected version:
+
+	}
+
+	if (alloc == -ENOSPC) {
+		return alloc;
+	}
+
+	mcux_flexcan_can_filter_to_mbconfig(filter, &data->rx_cbs[alloc].mb_config,
+		alloc = -ENOSPC;
+	}
+
+	k_mutex_unlock(&data->rx_mutex);
+
+	if (k_mutex_unlock(&data->rx_mutex) < 0) {
+		return -EIO;
+	}
+
+	return alloc;

@@ -1,0 +1,55 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment
+
+### Error correction:
+
+begin_function_decl
+name|size_t
+name|arch_virt_region_align
+parameter_list|(
+name|uintptr_t
+name|phys
+parameter_list|,
+name|size_t
+name|size
+parameter_list|)
+function_decl|;
+end_function_decl
+begin_comment
+comment|/**
+end_comment

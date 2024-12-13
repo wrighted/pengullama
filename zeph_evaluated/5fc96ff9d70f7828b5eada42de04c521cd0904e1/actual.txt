@@ -1,0 +1,82 @@
+F,FPF,F,F
+PAI
+Added an include, but not the right one.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to sys: atomic_c: skip syscall tracing. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+#endif
+
+#ifdef CONFIG_ATOMIC_OPERATIONS_C
+#include <syscalls/atomic_c.h>
+#endif
+
+#endif /* ZEPHYR_INCLUDE_SYS_ATOMIC_C_H_ */
+
+### Tokenized:
+
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_comment
+comment|/*
+end_comment
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|CONFIG_ATOMIC_OPERATIONS_C
+end_ifdef
+begin_include
+include|#
+directive|include
+file|<syscalls/atomic_c.h>
+end_include
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_comment
+comment|/*
+end_comment
+
+### Error location:
+I have identified the issue in the code you provided. I have placed a <START_ERROR> before the problematic code and a <END_ERROR> after the problematic code.
+
+### Error correction:
+Here is the code with the issue corrected:
+
+#endif
+
+#ifdef CONFIG_ATOMIC_OPERATIONS_C
+#include <syscalls/atomic_c.h>
+#endif
+
+#endif /* ZEPHYR_INCLUDE_SYS_ATOMIC_C_H_ */
+
+### Response:
+I corrected the issue in the code you provided. The issue was with: sys: atomic_c: skip syscall tracing
+
+This fixes a compile error when CONFIG_TRACING is not enabled.
+Here is the corrected version:
+
+#endif
+
+#ifdef CONFIG_ATOMIC_OPERATIONS_C
+#include <syscalls/atomic_c.h>
+#endif
+
+#ifdef CONFIG_TRACING
+#include <zephyr/sys/syscall.h>
+#endif
+
+#endif /* ZEPHYR_INCLUDE_SYS_ATOMIC_C_H_ */

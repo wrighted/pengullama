@@ -1,0 +1,152 @@
+P,FPP,P,F
+LCV
+The same variable was made smaller, but by too much to be considered acceptable.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to Revert "tests: drivers: counter: basic_api: Tweak test timing". Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+{
+	int err;
+	uint32_t cnt;
+	uint32_t us = 1500;
+	uint32_t ticks = counter_us_to_ticks(dev, us);
+	uint32_t top = counter_get_top_value(dev);
+
+
+### Tokenized:
+
+begin_block
+block|{
+name|int
+name|err
+decl_stmt|;
+name|uint32_t
+name|cnt
+decl_stmt|;
+name|uint32_t
+name|us
+init|=
+literal|1500
+decl_stmt|;
+name|uint32_t
+name|ticks
+init|=
+name|counter_us_to_ticks
+argument_list|(
+name|dev
+argument_list|,
+name|us
+argument_list|)
+decl_stmt|;
+name|uint32_t
+name|top
+init|=
+name|counter_get_top_value
+argument_list|(
+name|dev
+argument_list|)
+decl_stmt|;
+end_block
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_block
+block|{
+name|int
+name|err
+decl_stmt|;
+name|uint32_t
+name|cnt
+decl_stmt|;
+name|uint32_t
+name|us
+init|=
+<START_ERROR>
+literal|1500
+<END_ERROR>
+decl_stmt|;
+name|uint32_t
+name|ticks
+init|=
+name|counter_us_to_ticks
+argument_list|(
+name|dev
+argument_list|,
+name|us
+argument_list|)
+decl_stmt|;
+name|uint32_t
+name|top
+init|=
+name|counter_get_top_value
+argument_list|(
+name|dev
+argument_list|)
+decl_stmt|;
+end_block
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_block
+block|{
+name|int
+name|err
+decl_stmt|;
+name|uint32_t
+name|cnt
+decl_stmt|;
+name|uint32_t
+name|us
+init|=
+literal|100
+decl_stmt|;
+name|uint32_t
+name|ticks
+init|=
+name|counter_us_to_ticks
+argument_list|(
+name|dev
+argument_list|,
+name|us
+argument_list|)
+decl_stmt|;
+name|uint32_t
+name|top
+init|=
+name|counter_get_top_value
+argument_list|(
+name|dev
+argument_list|)
+decl_stmt|;
+end_block
+
+### Response:
+I corrected the issue in the code you provided:
+
+{
+	int err;
+	uint32_t cnt;
+	uint32_t us = 1500;
+	uint32_t ticks = counter_us_to_ticks(dev, us);
+	uint32_t top = counter_get_top_value(dev);
+
+The issue was with: Revert "tests: drivers: counter: basic_api: Tweak test timing"
+
+This reverts commit 3e2e5b6f5b2e7b2d3b1f0f1f1f5a3b6a5f6e5c4.
+
+The test timing was too long. This reverts the change to avoid
+introducing a regression.. Here is the corrected version:
+
+{
+	int err;
+	uint32_t cnt;
+	uint32_t us = 100;
+	uint32_t ticks = counter_us_to_ticks(dev, us);
+	uint32_t top = counter_get_top_value(dev);

@@ -1,0 +1,52 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/bc2075e31b1633a0d3c651593d4cbf633ed0406a
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_block
+block|{
+name|printk
+argument_list|(
+literal|"abort()\n"
+argument_list|)
+expr_stmt|;
+name|k_panic
+argument_list|()
+expr_stmt|;
+block|}
+end_block
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_block
+block|{
+name|printk
+argument_list|(
+literal|"abort()\n"
+argument_list|)
+expr_stmt|;
+name|k_panic
+argument_list|()
+<END_ERROR>
+expr_stmt|;
+<START_ERROR>
+block|}
+end_block
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_block
+block|{
+name|printk
+argument_list|(
+literal|"abort()\n"
+argument_list|)
+expr_stmt|;
+name|k_panic
+argument_list|()
+expr_stmt|;
+name|CODE_UNREACHABLE
+expr_stmt|;
+block|}
+end_block

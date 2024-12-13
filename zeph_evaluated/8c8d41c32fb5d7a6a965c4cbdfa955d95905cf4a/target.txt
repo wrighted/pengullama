@@ -1,0 +1,205 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/8c8d41c32fb5d7a6a965c4cbdfa955d95905cf4a
+
+### Instruction:
+I am having trouble with the following code in relation to samples: drivers: uart: Detect missing FIFO mode in echo_bot. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	}
+
+	/* configure interrupt and callback to receive data */
+	uart_irq_callback_user_data_set(uart_dev, serial_cb, NULL);
+	uart_irq_rx_enable(uart_dev);
+
+	print_uart("Hello! I'm your echo bot.\r\n");
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_comment
+unit|}
+comment|/*
+end_comment
+begin_expr_stmt
+unit|uart_irq_callback_user_data_set
+operator|(
+name|uart_dev
+operator|,
+name|serial_cb
+operator|,
+name|NULL
+operator|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|uart_irq_rx_enable
+argument_list|(
+name|uart_dev
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|print_uart
+argument_list|(
+literal|"Hello!
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_comment
+unit|}
+comment|/*
+end_comment
+begin_expr_stmt
+<START_ERROR>
+unit|uart_irq_callback_user_data_set
+operator|(
+name|uart_dev
+operator|,
+name|serial_cb
+operator|,
+name|NULL
+operator|)
+expr_stmt|;
+end_expr_stmt
+<END_ERROR>
+begin_expr_stmt
+name|uart_irq_rx_enable
+argument_list|(
+name|uart_dev
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|print_uart
+argument_list|(
+literal|"Hello!
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_comment
+unit|}
+comment|/*
+end_comment
+begin_expr_stmt
+unit|int
+name|ret
+operator|=
+name|uart_irq_callback_user_data_set
+argument_list|(
+name|uart_dev
+argument_list|,
+name|serial_cb
+argument_list|,
+name|NULL
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|ret
+operator|<
+literal|0
+condition|)
+block|{
+if|if
+condition|(
+name|ret
+operator|==
+operator|-
+name|ENOTSUP
+condition|)
+block|{
+name|printk
+argument_list|(
+literal|"Interrupt-driven
+argument_list|)
+expr_stmt|;
+block|}
+if|else
+condition|(
+name|ret
+operator|==
+operator|-
+name|ENOSYS
+condition|)
+block|{
+name|printk
+argument_list|(
+literal|"UART
+argument_list|)
+expr_stmt|;
+block|}
+else|else
+block|{
+name|printk
+argument_list|(
+literal|"Error
+argument_list|,
+name|ret
+argument_list|)
+expr_stmt|;
+block|}
+return|return;
+block|}
+end_if_stmt
+begin_expr_stmt
+name|uart_irq_rx_enable
+argument_list|(
+name|uart_dev
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|print_uart
+argument_list|(
+literal|"Hello!
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+	}
+
+	/* configure interrupt and callback to receive data */
+	uart_irq_callback_user_data_set(uart_dev, serial_cb, NULL);
+	uart_irq_rx_enable(uart_dev);
+
+	print_uart("Hello! I'm your echo bot.\r\n");
+The issue was with: samples: drivers: uart: Detect missing FIFO mode in echo_bot
+
+Print an error message if the UART doesn't support FIFO mode or FIFO
+mode is not enabled.
+
+Previously the sample would run with no errors, but wouldn't receive or
+echo any data.. Here is the corrected version:
+
+	}
+
+	/* configure interrupt and callback to receive data */
+	int ret = uart_irq_callback_user_data_set(uart_dev, serial_cb, NULL);
+
+	if (ret < 0) {
+		if (ret == -ENOTSUP) {
+			printk("Interrupt-driven UART API support not enabled\n");
+		} else if (ret == -ENOSYS) {
+			printk("UART device does not support interrupt-driven API\n");
+		} else {
+			printk("Error setting UART callback: %d\n", ret);
+		}
+		return;
+	}
+	uart_irq_rx_enable(uart_dev);
+
+	print_uart("Hello! I'm your echo bot.\r\n");

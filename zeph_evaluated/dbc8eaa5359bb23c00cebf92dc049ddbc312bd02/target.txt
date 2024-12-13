@@ -1,0 +1,145 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/dbc8eaa5359bb23c00cebf92dc049ddbc312bd02
+
+### Instruction:
+I am having trouble with the following code in relation to tests: drivers: can: api: Add negative test for can_add_rx_filter(). Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	can_remove_rx_filter(can_dev, filter_id);
+}
+
+/**
+ * @brief Test adding an invalid CAN RX filter.
+ *
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|can_remove_rx_filter
+argument_list|(
+name|can_dev
+argument_list|,
+name|filter_id
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+unit|}
+comment|/**
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|can_remove_rx_filter
+argument_list|(
+name|can_dev
+argument_list|,
+name|filter_id
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+unit|}
+<END_ERROR>
+comment|/**
+end_comment
+<START_ERROR>
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|can_remove_rx_filter
+argument_list|(
+name|can_dev
+argument_list|,
+name|filter_id
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+unit|}
+comment|/**
+end_comment
+begin_expr_stmt
+unit|ZTEST
+operator|(
+name|can_classic
+operator|,
+name|test_add_filter_without_callback
+operator|)
+block|{
+name|int
+name|err
+block|;
+name|Z_TEST_SKIP_IFNDEF
+argument_list|(
+name|CONFIG_RUNTIME_ERROR_CHECKS
+argument_list|)
+block|;
+name|err
+operator|=
+name|can_add_rx_filter
+argument_list|(
+name|can_dev
+argument_list|,
+name|NULL
+argument_list|,
+name|NULL
+argument_list|,
+operator|&
+name|test_std_filter_1
+argument_list|)
+block|;
+name|zassert_equal
+argument_list|(
+name|err
+argument_list|,
+operator|-
+name|EINVAL
+argument_list|,
+literal|"added
+argument_list|)
+block|;
+end_expr_stmt
+begin_comment
+comment|/**
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+	can_remove_rx_filter(can_dev, filter_id);
+}
+
+/**
+ * @brief Test adding an invalid CAN RX filter.
+ *
+The issue was with: tests: drivers: can: api: Add negative test for can_add_rx_filter()
+
+Check that error is reported when CAN filter is added without
+callback function.. Here is the corrected version:
+
+	can_remove_rx_filter(can_dev, filter_id);
+}
+
+/**
+* @brief Test adding filter without callback.
+*/
+ZTEST(can_classic, test_add_filter_without_callback)
+{
+	int err;
+
+	Z_TEST_SKIP_IFNDEF(CONFIG_RUNTIME_ERROR_CHECKS);
+
+	err = can_add_rx_filter(can_dev, NULL, NULL, &test_std_filter_1);
+	zassert_equal(err, -EINVAL, "added filter with NULL callback");
+}
+
+/**
+ * @brief Test adding an invalid CAN RX filter.
+ *

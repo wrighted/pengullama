@@ -1,0 +1,211 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/8af71805314358829b2eb998463a0295d3d93ac8
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: iso: make TX path service all connections. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	if (!frag) {
+		LOG_DBG("signaled ready but no frag available");
+		return NULL;
+	}
+
+		LOG_DBG("channel has been disconnected");
+		__ASSERT_NO_MSG(b == frag);
+
+		return NULL;
+	}
+
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_if_stmt
+if|if
+condition|(
+operator|!
+name|frag
+condition|)
+block|{
+name|LOG_DBG
+argument_list|(
+literal|"signaled
+argument_list|)
+expr_stmt|;
+return|return
+name|NULL
+return|;
+block|}
+end_if_stmt
+begin_expr_stmt
+name|LOG_DBG
+argument_list|(
+literal|"channel
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|__ASSERT_NO_MSG
+argument_list|(
+name|b
+operator|==
+name|frag
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_return
+return|return
+name|NULL
+return|;
+end_return
+unit|}
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_if_stmt
+if|if
+condition|(
+operator|!
+name|frag
+condition|)
+block|{
+name|LOG_DBG
+argument_list|(
+literal|"signaled
+argument_list|)
+expr_stmt|;
+<START_ERROR>
+return|return
+name|NULL
+return|;
+block|}
+end_if_stmt
+begin_expr_stmt
+name|LOG_DBG
+argument_list|(
+literal|"channel
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|__ASSERT_NO_MSG
+argument_list|(
+name|b
+operator|==
+name|frag
+argument_list|)
+<END_ERROR>
+expr_stmt|;
+end_expr_stmt
+begin_return
+return|return
+name|NULL
+return|;
+end_return
+unit|}
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_if_stmt
+if|if
+condition|(
+operator|!
+name|frag
+condition|)
+block|{
+name|LOG_DBG
+argument_list|(
+literal|"signaled
+argument_list|)
+expr_stmt|;
+comment|/*
+name|bt_tx_irq_raise
+argument_list|()
+expr_stmt|;
+return|return
+name|NULL
+return|;
+block|}
+end_if_stmt
+begin_expr_stmt
+name|LOG_DBG
+argument_list|(
+literal|"channel
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|__ASSERT_NO_MSG
+argument_list|(
+name|b
+operator|==
+name|frag
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+begin_expr_stmt
+name|bt_tx_irq_raise
+argument_list|()
+expr_stmt|;
+end_expr_stmt
+begin_return
+return|return
+name|NULL
+return|;
+end_return
+unit|}
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	if (!frag) {
+		LOG_DBG("signaled ready but no frag available");
+		return NULL;
+	}
+
+		LOG_DBG("channel has been disconnected");
+		__ASSERT_NO_MSG(b == frag);
+
+		return NULL;
+	}
+
+The issue was with: Bluetooth: iso: make TX path service all connections
+
+ISO connections that were in the TX queue were not getting serviced in
+time. This happens because `iso_data_pull()` returns `NULL` when that
+particular connection (`conn`) is done sending.
+
+But it doesn't trigger the TX processor again to process other channels in
+the queue. This patch fixes that by calling `bt_tx_irq_raise()`.
+
+We can't do this from `conn.c` as we don't know if the `NULL` returned is
+because the current channel is out of data or because it has data but it
+can't send it (e.g. the current buf is being "viewed" already).
+
+Fixes https://github.com/zephyrproject-rtos/zephyr/issues/74321. Here is the corrected version:
+
+
+	if (!frag) {
+		LOG_DBG("signaled ready but no frag available");
+		/* Service other connections */
+		bt_tx_irq_raise();
+
+		return NULL;
+	}
+
+		LOG_DBG("channel has been disconnected");
+		__ASSERT_NO_MSG(b == frag);
+
+		/* Service other connections */
+		bt_tx_irq_raise();
+
+		return NULL;
+	}

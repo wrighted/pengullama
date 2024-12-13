@@ -1,0 +1,121 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/e6486bf598c391b4e30372b50255cf5bbb84cddd
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: interrupt_controller: ra_icu: minor cleanups. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	return 0;
+}
+
+DEVICE_DT_INST_DEFINE(0, NULL, NULL, NULL, NULL, PRE_KERNEL_1, CONFIG_INTC_INIT_PRIORITY,
+		      NULL);
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_return
+return|return
+literal|0
+return|;
+end_return
+begin_expr_stmt
+unit|}
+operator|(
+literal|0
+operator|,
+name|NULL
+operator|,
+name|NULL
+operator|,
+name|NULL
+operator|,
+name|NULL
+operator|,
+name|PRE_KERNEL_1
+operator|,
+name|CONFIG_INTC_INIT_PRIORITY
+operator|,
+name|NULL
+operator|)
+expr_stmt|;
+end_expr_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_return
+<END_ERROR>
+return|return
+literal|0
+return|;
+end_return
+begin_expr_stmt
+unit|}
+operator|(
+literal|0
+operator|,
+name|NULL
+operator|,
+name|NULL
+operator|,
+name|NULL
+operator|,
+name|NULL
+operator|,
+name|PRE_KERNEL_1
+operator|,
+name|CONFIG_INTC_INIT_PRIORITY
+operator|,
+name|NULL
+operator|)
+expr_stmt|;
+end_expr_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_return
+return|return
+literal|0
+return|;
+end_return
+begin_expr_stmt
+unit|}
+operator|(
+literal|0
+operator|,
+name|NULL
+operator|,
+name|NULL
+operator|,
+name|NULL
+operator|,
+name|NULL
+operator|,
+name|PRE_KERNEL_1
+operator|,
+name|CONFIG_INTC_INIT_PRIORITY
+operator|,
+name|NULL
+operator|)
+expr_stmt|;
+end_expr_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+	return 0;
+}
+
+DEVICE_DT_INST_DEFINE(0, NULL, NULL, NULL, NULL, PRE_KERNEL_1, CONFIG_INTC_INIT_PRIORITY,
+		      NULL);
+The issue was with: drivers: interrupt_controller: ra_icu: minor cleanups
+
+- Corrected indentation with clang-format. Here is the corrected version:
+
+	return 0;
+}
+
+DEVICE_DT_INST_DEFINE(0, NULL, NULL, NULL, NULL, PRE_KERNEL_1, CONFIG_INTC_INIT_PRIORITY, NULL);

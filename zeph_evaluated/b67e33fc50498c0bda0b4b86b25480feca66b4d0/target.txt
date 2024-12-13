@@ -1,0 +1,151 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/b67e33fc50498c0bda0b4b86b25480feca66b4d0
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: bmi160: fix the issue of missing gpio cfg for i2c. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	{					       \
+		.bus.i2c = I2C_DT_SPEC_INST_GET(inst), \
+		.bus_io = &bmi160_bus_io_i2c,	       \
+	}
+
+#define BMI160_DEFINE_I2C(inst)							    \
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_block
+block|{
+block_content|\
+operator|.
+name|bus
+operator|.
+name|i2c
+operator|=
+name|I2C_DT_SPEC_INST_GET
+argument_list|(
+name|inst
+argument_list|)
+operator|,
+expr_stmt|\
+operator|.
+name|bus_io
+operator|=
+operator|&
+name|bmi160_bus_io_i2c
+operator|,
+block_content|\
+block|}
+end_block
+begin_define
+define|#
+directive|define
+name|BMI160_DEFINE_I2C
+parameter_list|(
+name|inst
+parameter_list|)
+value|\
+end_define
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_block
+block|{
+block_content|\
+operator|.
+name|bus
+operator|.
+name|i2c
+operator|=
+name|I2C_DT_SPEC_INST_GET
+argument_list|(
+name|inst
+argument_list|)
+operator|,
+expr_stmt|\
+operator|.
+name|bus_io
+operator|=
+operator|&
+name|bmi160_bus_io_i2c
+operator|,
+<END_ERROR>
+<START_ERROR>
+block_content|\
+block|}
+end_block
+begin_define
+define|#
+directive|define
+name|BMI160_DEFINE_I2C
+parameter_list|(
+name|inst
+parameter_list|)
+value|\
+end_define
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_block
+block|{
+block_content|\
+operator|.
+name|bus
+operator|.
+name|i2c
+operator|=
+name|I2C_DT_SPEC_INST_GET
+argument_list|(
+name|inst
+argument_list|)
+operator|,
+expr_stmt|\
+operator|.
+name|bus_io
+operator|=
+operator|&
+name|bmi160_bus_io_i2c
+operator|,
+expr_stmt|\
+name|BMI160_TRIGGER_CFG
+argument_list|(
+argument|inst
+argument_list|)
+block_content|\
+block|}
+end_block
+begin_define
+define|#
+directive|define
+name|BMI160_DEFINE_I2C
+parameter_list|(
+name|inst
+parameter_list|)
+value|\
+end_define
+
+### Response:
+I corrected the issue in the code you provided:
+
+	{					       \
+		.bus.i2c = I2C_DT_SPEC_INST_GET(inst), \
+		.bus_io = &bmi160_bus_io_i2c,	       \
+	}
+
+#define BMI160_DEFINE_I2C(inst)							    \
+The issue was with: sensor: bmi160: fix the issue of missing gpio cfg for i2c
+
+Add BMI160_TRIGGER_CFG in bmi160_cfg for i2c instance when
+trigger mode enabled.. Here is the corrected version:
+
+	{					       \
+		.bus.i2c = I2C_DT_SPEC_INST_GET(inst), \
+		.bus_io = &bmi160_bus_io_i2c,	       \
+		BMI160_TRIGGER_CFG(inst)	       \
+	}
+
+#define BMI160_DEFINE_I2C(inst)							    \

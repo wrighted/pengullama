@@ -1,0 +1,151 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/3d58697d7d613a3f629f0e47113b727b5c6f1d16
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: phy_mii: Remove the unneeded header file. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <soc.h>
+#include <zephyr/drivers/mdio.h>
+#include <zephyr/net/phy.h>
+#include <zephyr/net/mii.h>
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_include
+include|#
+directive|include
+file|<zephyr/device.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/init.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/kernel.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<soc.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/drivers/mdio.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/net/phy.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/net/mii.h>
+end_include
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_include
+include|#
+directive|include
+file|<zephyr/device.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/init.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/kernel.h>
+end_include
+begin_include
+include|#
+directive|include
+<START_ERROR>
+file|<soc.h>
+<END_ERROR>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/drivers/mdio.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/net/phy.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/net/mii.h>
+end_include
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_include
+include|#
+directive|include
+file|<zephyr/device.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/init.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/kernel.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/drivers/mdio.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/net/phy.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/net/mii.h>
+end_include
+
+### Response:
+I corrected the issue in the code you provided:
+
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <soc.h>
+#include <zephyr/drivers/mdio.h>
+#include <zephyr/net/phy.h>
+#include <zephyr/net/mii.h>
+The issue was with: drivers: phy_mii: Remove the unneeded header file
+
+Remove the 'soc.h' to fix the compiling error as the 'phy_mii.c'
+doesn't need it.. Here is the corrected version:
+
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/mdio.h>
+#include <zephyr/net/phy.h>
+#include <zephyr/net/mii.h>

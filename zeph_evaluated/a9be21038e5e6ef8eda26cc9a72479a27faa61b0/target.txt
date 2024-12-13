@@ -1,0 +1,118 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/a9be21038e5e6ef8eda26cc9a72479a27faa61b0
+
+### Instruction:
+I am having trouble with the following code in relation to drivers/pinctrl.h: Resolve PINCTRL_DT_STATE_INIT Cpp Compatibility. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+ */
+#define PINCTRL_DT_STATE_INIT(prop, state)				       \
+	{								       \
+		.id = state,						       \
+		.pins = prop ## _pins,					       \
+		.pin_cnt = ARRAY_SIZE(prop ## _pins)			       \
+	}
+
+/**
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr
+operator|*
+operator|/
+end_expr
+begin_define
+define|#
+directive|define
+name|PINCTRL_DT_STATE_INIT
+parameter_list|(
+name|prop
+parameter_list|,
+name|state
+parameter_list|)
+define|\
+value|{
+end_define
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr
+<END_ERROR>
+operator|*
+operator|/
+end_expr
+begin_define
+define|#
+directive|define
+name|PINCTRL_DT_STATE_INIT
+parameter_list|(
+name|prop
+parameter_list|,
+name|state
+parameter_list|)
+define|\
+value|{
+end_define
+begin_comment
+comment|/**
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr
+operator|*
+operator|/
+end_expr
+begin_define
+define|#
+directive|define
+name|PINCTRL_DT_STATE_INIT
+parameter_list|(
+name|prop
+parameter_list|,
+name|state
+parameter_list|)
+define|\
+value|{
+end_define
+begin_comment
+comment|/**
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+ */
+#define PINCTRL_DT_STATE_INIT(prop, state)				       \
+	{								       \
+		.id = state,						       \
+		.pins = prop ## _pins,					       \
+		.pin_cnt = ARRAY_SIZE(prop ## _pins)			       \
+	}
+
+/**
+The issue was with: drivers/pinctrl.h: Resolve PINCTRL_DT_STATE_INIT Cpp Compatibility
+
+This commit adds C++20 onwards support for the
+PINCTRL_DT_STATE_INIT macro. Since C++20, support was
+added for designated initializers but with the restriction that
+they're ordered. PINCTRL_DT_STATE_INIT initializes a
+pinctrl_state struct but the current initializer list is un-ordered,
+this PR resolves that for >= C++20 compat. Here is the corrected version:
+
+ */
+#define PINCTRL_DT_STATE_INIT(prop, state)				       \
+	{								       \
+		.pins = prop ## _pins,					       \
+		.pin_cnt = ARRAY_SIZE(prop ## _pins),			       \
+		.id = state						       \
+	}
+
+/**

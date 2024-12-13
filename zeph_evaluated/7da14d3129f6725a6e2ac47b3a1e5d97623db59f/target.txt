@@ -1,0 +1,153 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/7da14d3129f6725a6e2ac47b3a1e5d97623db59f
+
+### Instruction:
+I am having trouble with the following code in relation to net: shell: Clarify the name of the virtual interface. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+			name = "<unknown>";
+		}
+
+		PR("Name      : %s\n", name);
+
+		orig_iface = net_virtual_get_iface(iface);
+		if (orig_iface == NULL) {
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|name
+operator|=
+literal|"<unknown>"
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|}
+operator|(
+literal|"Name
+operator|,
+name|name
+operator|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|orig_iface
+operator|=
+name|net_virtual_get_iface
+argument_list|(
+name|iface
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|orig_iface
+operator|==
+name|NULL
+condition|)
+block|{
+end_if_stmt
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|name
+operator|=
+literal|"<unknown>"
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|}
+operator|(
+<START_ERROR>
+literal|"Name
+<END_ERROR>
+operator|,
+name|name
+operator|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|orig_iface
+operator|=
+name|net_virtual_get_iface
+argument_list|(
+name|iface
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|orig_iface
+operator|==
+name|NULL
+condition|)
+block|{
+end_if_stmt
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|name
+operator|=
+literal|"<unknown>"
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+unit|}
+operator|(
+literal|"Virtual
+operator|,
+name|name
+operator|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|orig_iface
+operator|=
+name|net_virtual_get_iface
+argument_list|(
+name|iface
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|orig_iface
+operator|==
+name|NULL
+condition|)
+block|{
+end_if_stmt
+
+### Response:
+I corrected the issue in the code you provided:
+
+			name = "<unknown>";
+		}
+
+		PR("Name      : %s\n", name);
+
+		orig_iface = net_virtual_get_iface(iface);
+		if (orig_iface == NULL) {
+The issue was with: net: shell: Clarify the name of the virtual interface
+
+The net-shell printed virtual interface name so that it got
+the impression it was the network interface name which is not
+correct. Now the name is printed as "Virtual name" which is
+unambiguous.. Here is the corrected version:
+
+			name = "<unknown>";
+		}
+
+		PR("Virtual name : %s\n", name);
+
+		orig_iface = net_virtual_get_iface(iface);
+		if (orig_iface == NULL) {

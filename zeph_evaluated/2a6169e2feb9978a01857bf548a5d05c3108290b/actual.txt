@@ -1,0 +1,146 @@
+PP,FFF,F,F
+PAV
+Did not address error, started concatinating code.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Fix coverity issue 340852. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	cte_info.type = df_cfg->cte_type;
+	cte_info.time = df_cfg->cte_length;
+
+	/* Note: ULL_ADV_PDU_EXTRA_DATA_ALLOC_ALWAYS is just information that extra_data
+	 * is required in case of this ull_adv_sync_pdu_alloc.
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|cte_info
+operator|.
+name|type
+operator|=
+name|df_cfg
+operator|->
+name|cte_type
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|cte_info
+operator|.
+name|time
+operator|=
+name|df_cfg
+operator|->
+name|cte_length
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|cte_info
+operator|.
+name|type
+operator|=
+name|df_cfg
+operator|->
+name|cte_type
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|cte_info
+operator|.
+name|time
+operator|=
+name|df_cfg
+operator|->
+name|cte_length
+expr_stmt|;
+end_expr_stmt
+<END_ERROR>
+<START_ERROR>
+begin_comment
+comment|/*
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|cte_info
+operator|.
+name|type
+operator|=
+name|df_cfg
+operator|->
+name|cte_type
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|cte_info
+operator|.
+name|time
+operator|=
+name|df_cfg
+operator|->
+name|cte_length
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+begin_expr_stmt
+name|ull_adv_sync_pdu_alloc
+argument_list|(
+name|ull_adv_pdu
+argument_list|,
+name|ULL_ADV_PDU_SYNC_DATA_ALLOC_ALWAYS
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|ull_adv_sync_pdu_alloc
+argument_list|(
+name|ull_adv_pdu
+argument_list|,
+name|ULL_ADV_PDU_SYNC_DATA_ALLOC_ALWAYS
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_comment
+comment|/*
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	cte_info.type = df_cfg->cte_type;
+	cte_info.time = df_cfg->cte_length;
+
+	/* Note: ULL_ADV_PDU_EXTRA_DATA_ALLOC_ALWAYS is just information that extra_data
+	 * is required in case of this ull_adv_sync_pdu_alloc.
+The issue was with: Bluetooth: Controller: Fix coverity issue 340852
+
+Fixes a Coverity issue where we are not allocating extra data in
+ull_adv_sync_pdu_alloc. Here is the corrected version:
+
+
+	cte_info.type = df_cfg->cte_type;
+	cte_info.time = df_cfg->cte_length;
+
+	/* Note: ULL_ADV_PDU_EXTRA_DATA_ALLOC_ALWAYS is just information that extra_data
+	 * is required in case of this ull_adv_sync_pdu_alloc.
+	ull_adv_sync_pdu_alloc(ull_adv_pdu, ULL_ADV_PDU_SYNC_DATA_ALLOC_ALWAYS);
+	ull_adv_sync_pdu_alloc(ull_adv_pdu, ULL_ADV_PDU_SYNC_DATA_ALLOC_ALWAYS);

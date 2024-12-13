@@ -1,0 +1,209 @@
+PP,PFP,P,P
+LCV
+More nesting than intended fix, but applies similiar fix.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|data
+operator|->
+name|ctx_spi
+operator|.
+name|mdelay
+operator|=
+operator|(
+expr|stmdev_mdelay_ptr
+operator|)
+name|stmemsc_mdelay
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|data
+operator|->
+name|ctx
+operator|=
+operator|&
+name|data
+operator|->
+name|ctx_spi
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|data
+operator|->
+name|ctx
+operator|->
+name|handle
+operator|=
+name|data
+expr_stmt|;
+end_expr_stmt
+begin_return
+return|return
+literal|0
+return|;
+end_return
+unit|}
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|data
+operator|->
+name|ctx_spi
+operator|.
+name|mdelay
+operator|=
+operator|(
+expr|stmdev_mdelay_ptr
+operator|)
+name|stmemsc_mdelay
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|data
+operator|->
+name|ctx
+operator|=
+operator|&
+name|data
+operator|->
+name|ctx_spi
+expr_stmt|;
+end_expr_stmt
+<END_ERROR>
+<START_ERROR>
+begin_expr_stmt
+name|data
+operator|->
+name|ctx
+operator|->
+name|handle
+operator|=
+name|data
+expr_stmt|;
+end_expr_stmt
+begin_return
+return|return
+literal|0
+return|;
+end_return
+unit|}
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|data
+operator|->
+name|ctx_spi
+operator|.
+name|mdelay
+operator|=
+operator|(
+expr|stmdev_mdelay_ptr
+operator|)
+name|stmemsc_mdelay
+expr_stmt|;
+end_expr_stmt
+begin_expr_stmt
+name|data
+operator|->
+name|ctx
+operator|=
+operator|&
+name|data
+operator|->
+name|ctx_spi
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|data
+operator|->
+name|mode
+operator|==
+name|SENSOR_MODE_SPI
+condition|)
+block|{
+name|data
+operator|->
+name|ctx
+operator|->
+name|handle
+operator|=
+operator|&
+name|data
+operator|->
+name|ctx_spi
+expr_stmt|;
+block|}
+else|else
+block|{
+name|data
+operator|->
+name|ctx
+operator|->
+name|handle
+operator|=
+name|data
+expr_stmt|;
+block|}
+end_if_stmt
+begin_return
+return|return
+literal|0
+return|;
+end_return
+unit|}
+
+### Response:
+I corrected the issue in the code you provided:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+The issue was with: sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode
+
+The ISM330DHCX driver uses a common ctx struct for both SPI and I2C
+modes. This struct has a handle field that is used to pass a pointer
+to the driver data structure, which is different for SPI and I2C
+modes. However, the code was passing the handle for SPI mode as a
+pointer to the ctx_spi struct, which is incorrect. This commit fixes
+the issue by passing the correct handle for both SPI and I2C modes.. Here is the corrected version:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	if (data->mode == SENSOR_MODE_SPI) {
+		data->ctx->handle = &data->ctx_spi;
+	} else {
+		data->ctx->handle = data;
+	}
+
+	return 0;
+}

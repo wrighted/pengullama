@@ -1,0 +1,191 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/5fc96ff9d70f7828b5eada42de04c521cd0904e1
+
+### Instruction:
+I am having trouble with the following code in relation to sys: atomic_c: skip syscall tracing. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+#endif
+
+#ifdef CONFIG_ATOMIC_OPERATIONS_C
+#include <syscalls/atomic_c.h>
+#endif
+
+#endif /* ZEPHYR_INCLUDE_SYS_ATOMIC_C_H_ */
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|CONFIG_ATOMIC_OPERATIONS_C
+end_ifdef
+begin_include
+include|#
+directive|include
+file|<syscalls/atomic_c.h>
+end_include
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_comment
+comment|/*
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|CONFIG_ATOMIC_OPERATIONS_C
+end_ifdef
+<START_ERROR>
+begin_include
+include|#
+directive|include
+file|<syscalls/atomic_c.h>
+end_include
+<END_ERROR>
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_comment
+comment|/*
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|CONFIG_ATOMIC_OPERATIONS_C
+end_ifdef
+begin_ifndef
+ifndef|#
+directive|ifndef
+name|DISABLE_SYSCALL_TRACING
+end_ifndef
+begin_comment
+comment|/*
+end_comment
+begin_define
+define|#
+directive|define
+name|DISABLE_SYSCALL_TRACING
+end_define
+begin_define
+define|#
+directive|define
+name|_REMOVE_DISABLE_SYSCALL_TRACING
+end_define
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_include
+include|#
+directive|include
+file|<syscalls/atomic_c.h>
+end_include
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|_REMOVE_DISABLE_SYSCALL_TRACING
+end_ifdef
+begin_undef
+undef|#
+directive|undef
+name|DISABLE_SYSCALL_TRACING
+end_undef
+begin_undef
+undef|#
+directive|undef
+name|_REMOVE_DISABLE_SYSCALL_TRACING
+end_undef
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_endif
+endif|#
+directive|endif
+end_endif
+begin_comment
+comment|/*
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+#endif
+
+#ifdef CONFIG_ATOMIC_OPERATIONS_C
+#include <syscalls/atomic_c.h>
+#endif
+
+#endif /* ZEPHYR_INCLUDE_SYS_ATOMIC_C_H_ */
+The issue was with: sys: atomic_c: skip syscall tracing
+
+This skips syscall tracing on atomic_c.h, as the compiler
+does not like "({ ... tracing code ... })" and complains:
+
+  error: expected identifier or '(' before '{' token
+
+Even though there is already a '(' before '{'.. Here is the corrected version:
+
+#endif
+
+#ifdef CONFIG_ATOMIC_OPERATIONS_C
+
+#ifndef DISABLE_SYSCALL_TRACING
+/* Skip defining macros of atomic_*() for syscall tracing.
+* Compiler does not like "({ ... tracing code ... })" and complains
+*
+*   error: expected identifier or '(' before '{' token
+*
+* ... even though there is a '(' before '{'.
+*/
+#define DISABLE_SYSCALL_TRACING
+#define _REMOVE_DISABLE_SYSCALL_TRACING
+#endif
+
+#include <syscalls/atomic_c.h>
+
+#ifdef _REMOVE_DISABLE_SYSCALL_TRACING
+#undef DISABLE_SYSCALL_TRACING
+#undef _REMOVE_DISABLE_SYSCALL_TRACING
+#endif
+
+#endif
+
+#endif /* ZEPHYR_INCLUDE_SYS_ATOMIC_C_H_ */

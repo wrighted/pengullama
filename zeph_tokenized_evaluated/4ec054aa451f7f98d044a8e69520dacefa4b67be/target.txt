@@ -1,0 +1,83 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/4ec054aa451f7f98d044a8e69520dacefa4b67be
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+unit|}
+operator|(
+name|alloc
+operator|==
+operator|-
+name|ENOSPC
+operator|)
+block|{
+return|return
+name|alloc
+return|;
+block|}
+end_expr_stmt
+begin_macro
+name|mcux_flexcan_can_filter_to_mbconfig
+argument_list|(
+argument|filter
+argument_list|,
+argument|&data->rx_cbs[alloc].mb_config
+argument_list|,
+argument|alloc
+end_macro
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+unit|}
+operator|(
+name|alloc
+operator|==
+operator|-
+name|ENOSPC
+operator|)
+block|{
+<START_ERROR>
+return|return
+name|alloc
+return|;
+<END_ERROR>
+block|}
+end_expr_stmt
+begin_macro
+name|mcux_flexcan_can_filter_to_mbconfig
+argument_list|(
+argument|filter
+argument_list|,
+argument|&data->rx_cbs[alloc].mb_config
+argument_list|,
+argument|alloc
+end_macro
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+unit|}
+operator|(
+name|alloc
+operator|==
+operator|-
+name|ENOSPC
+operator|)
+block|{
+goto|goto
+name|unlock
+goto|;
+block|}
+end_expr_stmt
+begin_macro
+name|mcux_flexcan_can_filter_to_mbconfig
+argument_list|(
+argument|filter
+argument_list|,
+argument|&data->rx_cbs[alloc].mb_config
+argument_list|,
+argument|alloc
+end_macro

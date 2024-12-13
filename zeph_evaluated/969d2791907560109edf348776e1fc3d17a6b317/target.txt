@@ -1,0 +1,189 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/969d2791907560109edf348776e1fc3d17a6b317
+
+### Instruction:
+I am having trouble with the following code in relation to samples: Bluetooth: Unicast client missing err check on sem. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	for (size_t i = 0U; i < configured_stream_count; i++) {
+		printk("QoS: waiting for %zu streams\n", configured_stream_count);
+		k_sem_take(&sem_stream_qos, K_FOREVER);
+	}
+
+	return 0;
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_for
+for|for
+control|(
+name|size_t
+name|i
+init|=
+literal|0U
+init|;
+name|i
+operator|<
+name|configured_stream_count
+condition|;
+name|i
+operator|++
+control|)
+block|{
+name|printk
+argument_list|(
+literal|"QoS:
+argument_list|,
+name|configured_stream_count
+argument_list|)
+expr_stmt|;
+name|k_sem_take
+argument_list|(
+operator|&
+name|sem_stream_qos
+argument_list|,
+name|K_FOREVER
+argument_list|)
+expr_stmt|;
+block|}
+end_for
+begin_return
+return|return
+literal|0
+return|;
+end_return
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_for
+for|for
+control|(
+name|size_t
+name|i
+init|=
+literal|0U
+init|;
+name|i
+operator|<
+name|configured_stream_count
+condition|;
+name|i
+operator|++
+control|)
+block|{
+name|printk
+argument_list|(
+literal|"QoS:
+argument_list|,
+name|configured_stream_count
+argument_list|)
+expr_stmt|;
+<START_ERROR>
+name|k_sem_take
+argument_list|(
+operator|&
+name|sem_stream_qos
+argument_list|,
+name|K_FOREVER
+argument_list|)
+expr_stmt|;
+<END_ERROR>
+block|}
+end_for
+begin_return
+return|return
+literal|0
+return|;
+end_return
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_for
+for|for
+control|(
+name|size_t
+name|i
+init|=
+literal|0U
+init|;
+name|i
+operator|<
+name|configured_stream_count
+condition|;
+name|i
+operator|++
+control|)
+block|{
+name|printk
+argument_list|(
+literal|"QoS:
+argument_list|,
+name|configured_stream_count
+argument_list|)
+expr_stmt|;
+name|err
+operator|=
+name|k_sem_take
+argument_list|(
+operator|&
+name|sem_stream_qos
+argument_list|,
+name|K_FOREVER
+argument_list|)
+expr_stmt|;
+if|if
+condition|(
+name|err
+operator|!=
+literal|0
+condition|)
+block|{
+name|printk
+argument_list|(
+literal|"failed
+argument_list|,
+name|err
+argument_list|)
+expr_stmt|;
+return|return
+name|err
+return|;
+block|}
+block|}
+end_for
+begin_return
+return|return
+literal|0
+return|;
+end_return
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	for (size_t i = 0U; i < configured_stream_count; i++) {
+		printk("QoS: waiting for %zu streams\n", configured_stream_count);
+		k_sem_take(&sem_stream_qos, K_FOREVER);
+	}
+
+	return 0;
+The issue was with: samples: Bluetooth: Unicast client missing err check on sem
+
+Added missing error check when taking the sem_stream_qos.. Here is the corrected version:
+
+
+	for (size_t i = 0U; i < configured_stream_count; i++) {
+		printk("QoS: waiting for %zu streams\n", configured_stream_count);
+		err = k_sem_take(&sem_stream_qos, K_FOREVER);
+		if (err != 0) {
+			printk("failed to take sem_stream_qos (err %d)\n", err);
+			return err;
+		}
+	}
+
+	return 0;

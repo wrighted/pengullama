@@ -1,0 +1,141 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/12c89edc39a01f8aa374b9f60f935a17e334966f
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: ascs: Fix return without state change nor response. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		err = ascs_disconnect_stream(stream);
+		if (err < 0) {
+			LOG_ERR("Failed to disconnect stream %p: %d", stream, err);
+			return;
+		}
+	}
+
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr_stmt
+name|err
+operator|=
+name|ascs_disconnect_stream
+argument_list|(
+name|stream
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|err
+operator|<
+literal|0
+condition|)
+block|{
+name|LOG_ERR
+argument_list|(
+literal|"Failed
+argument_list|,
+name|stream
+argument_list|,
+name|err
+argument_list|)
+expr_stmt|;
+return|return;
+block|}
+end_if_stmt
+unit|}
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr_stmt
+name|err
+operator|=
+name|ascs_disconnect_stream
+argument_list|(
+name|stream
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|err
+operator|<
+literal|0
+condition|)
+block|{
+name|LOG_ERR
+argument_list|(
+literal|"Failed
+argument_list|,
+name|stream
+argument_list|,
+name|err
+argument_list|)
+expr_stmt|;
+<START_ERROR>
+return|return;
+<END_ERROR>
+block|}
+end_if_stmt
+unit|}
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr_stmt
+name|err
+operator|=
+name|ascs_disconnect_stream
+argument_list|(
+name|stream
+argument_list|)
+expr_stmt|;
+end_expr_stmt
+begin_if_stmt
+if|if
+condition|(
+name|err
+operator|<
+literal|0
+condition|)
+block|{
+name|LOG_ERR
+argument_list|(
+literal|"Failed
+argument_list|,
+name|stream
+argument_list|,
+name|err
+argument_list|)
+expr_stmt|;
+block|}
+end_if_stmt
+unit|}
+
+### Response:
+I corrected the issue in the code you provided:
+
+		err = ascs_disconnect_stream(stream);
+		if (err < 0) {
+			LOG_ERR("Failed to disconnect stream %p: %d", stream, err);
+			return;
+		}
+	}
+
+The issue was with: Bluetooth: ascs: Fix return without state change nor response
+
+This fixes missing control point status and ASE status change, when
+failed to disconnect the CIS. As the server may, but does not have to
+disconnect the CIS, the operation should not be considered as failed
+when it happens.. Here is the corrected version:
+
+		err = ascs_disconnect_stream(stream);
+		if (err < 0) {
+			LOG_ERR("Failed to disconnect stream %p: %d", stream, err);
+		}
+	}

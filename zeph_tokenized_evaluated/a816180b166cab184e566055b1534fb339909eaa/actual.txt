@@ -1,0 +1,40 @@
+Below is some tokenized faulty code. Locate the error, and correct it.
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr
+operator|new
+name|file
+name|mode
+literal|100644
+end_expr
+
+### Error location:
+
+begin_expr
+operator|new
+name|file
+name|mode
+literal|100644
+end_expr
+
+### Error correction:
+
+begin_expr
+operator|new
+name|file
+name|mode
+literal|100644
+end_expr
+begin_decl_stmt
+name|struct
+name|k_work
+name|work
+decl_stmt|;
+end_decl_stmt
+begin_decl_stmt
+name|struct
+name|k_work
+name|work
+decl_stmt|;
+end_decl_stmt

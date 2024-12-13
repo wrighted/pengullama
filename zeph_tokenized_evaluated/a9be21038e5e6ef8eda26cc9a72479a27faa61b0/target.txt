@@ -1,0 +1,70 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/a9be21038e5e6ef8eda26cc9a72479a27faa61b0
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_expr
+operator|*
+operator|/
+end_expr
+begin_define
+define|#
+directive|define
+name|PINCTRL_DT_STATE_INIT
+parameter_list|(
+name|prop
+parameter_list|,
+name|state
+parameter_list|)
+define|\
+value|{
+end_define
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_expr
+<END_ERROR>
+operator|*
+operator|/
+end_expr
+begin_define
+define|#
+directive|define
+name|PINCTRL_DT_STATE_INIT
+parameter_list|(
+name|prop
+parameter_list|,
+name|state
+parameter_list|)
+define|\
+value|{
+end_define
+begin_comment
+comment|/**
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_expr
+operator|*
+operator|/
+end_expr
+begin_define
+define|#
+directive|define
+name|PINCTRL_DT_STATE_INIT
+parameter_list|(
+name|prop
+parameter_list|,
+name|state
+parameter_list|)
+define|\
+value|{
+end_define
+begin_comment
+comment|/**
+end_comment

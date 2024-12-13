@@ -1,0 +1,117 @@
+Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/e832a87e1c9bb2f98590409840aceefcdae16ecd
+
+### Instruction:
+I am having trouble with the following code in relation to include: usb: include usb_ch9.h. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+#define ZEPHYR_INCLUDE_USB_HID_CLASS_DEVICE_H_
+
+#include <zephyr/usb/class/hid.h>
+
+#ifdef __cplusplus
+extern "C" {
+
+### Tokenized:
+Here is the faulty code which has been tokenized:
+
+begin_define
+define|#
+directive|define
+name|ZEPHYR_INCLUDE_USB_HID_CLASS_DEVICE_H_
+end_define
+begin_include
+include|#
+directive|include
+file|<zephyr/usb/class/hid.h>
+end_include
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|__cplusplus
+end_ifdef
+begin_extern
+extern|extern
+literal|"C"
+block|{
+end_extern
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_define
+define|#
+directive|define
+name|ZEPHYR_INCLUDE_USB_HID_CLASS_DEVICE_H_
+end_define
+begin_include
+include|#
+directive|include
+file|<zephyr/usb/class/hid.h>
+<END_ERROR>
+end_include
+<START_ERROR>
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|__cplusplus
+end_ifdef
+begin_extern
+extern|extern
+literal|"C"
+block|{
+end_extern
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_define
+define|#
+directive|define
+name|ZEPHYR_INCLUDE_USB_HID_CLASS_DEVICE_H_
+end_define
+begin_include
+include|#
+directive|include
+file|<zephyr/usb/class/hid.h>
+end_include
+begin_include
+include|#
+directive|include
+file|<zephyr/usb/usb_ch9.h>
+end_include
+begin_ifdef
+ifdef|#
+directive|ifdef
+name|__cplusplus
+end_ifdef
+begin_extern
+extern|extern
+literal|"C"
+block|{
+end_extern
+
+### Response:
+I corrected the issue in the code you provided:
+
+#define ZEPHYR_INCLUDE_USB_HID_CLASS_DEVICE_H_
+
+#include <zephyr/usb/class/hid.h>
+
+#ifdef __cplusplus
+extern "C" {
+The issue was with: include: usb: include usb_ch9.h
+
+In usb_hid.h `struct usb_setup_packet` is used. This is defined in
+usb_ch9.h but not included in usb_hid.h which leads to build errors when
+you include the usb header files in the wrong order. This commit fixes
+this behaviour.. Here is the corrected version:
+
+#define ZEPHYR_INCLUDE_USB_HID_CLASS_DEVICE_H_
+
+#include <zephyr/usb/class/hid.h>
+#include <zephyr/usb/usb_ch9.h>
+
+#ifdef __cplusplus
+extern "C" {

@@ -1,0 +1,110 @@
+F,PFP,P,P
+LCC
+This tried to accomplish the same goal, but may have intriduced another bug.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: dma: dma_nxp_edma: allow channel re-configuration. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		}
+		break;
+	case CHAN_STATE_CONFIGURED:
+		if (next!= CHAN_STATE_STARTED) {
+			return -EPERM;
+		}
+		break;
+
+### Tokenized:
+
+begin_case
+unit|}
+case|case
+name|CHAN_STATE_CONFIGURED
+case|:
+end_case
+begin_if_stmt
+if|if
+condition|(
+name|next
+operator|!=
+name|CHAN_STATE_STARTED
+condition|)
+block|{
+return|return
+operator|-
+name|EPERM
+return|;
+block|}
+end_if_stmt
+begin_break
+break|break;
+end_break
+
+### Error location:
+
+begin_expr_stmt
+unit|}
+operator|-
+name|EPERM
+return|;
+block|}
+end_expr_stmt
+begin_break
+break|break;
+end_break
+
+### Error correction:
+
+begin_case
+unit|}
+case|case
+name|CHAN_STATE_CONFIGURED
+case|:
+end_case
+begin_if_stmt
+if|if
+condition|(
+name|next
+operator|!=
+name|CHAN_STATE_STARTED
+condition|)
+block|{
+return|return
+operator|-
+name|EPERM
+return|;
+block|}
+end_if_stmt
+begin_break
+break|break;
+end_break
+
+### Response:
+I corrected the issue in the code you provided:
+
+		}
+		break;
+	case CHAN_STATE_CONFIGURED:
+		if (next!= CHAN_STATE_STARTED) {
+			return -EPERM;
+		}
+		break;
+The issue was with: drivers: dma: dma_nxp_edma: allow channel re-configuration
+
+Currently, the DMA channel can be configured only once, but there is no
+reason why it should not be allowed to reconfigure the channel if it is
+not started. This patch allows reconfiguration of the channel if it is
+not started.. Here is the corrected version:
+
+		}
+		break;
+	case CHAN_STATE_CONFIGURED:
+		if (next!= CHAN_STATE_STARTED) {
+			/* allow reconfiguration of the channel */
+			return 0;
+		}
+		break;

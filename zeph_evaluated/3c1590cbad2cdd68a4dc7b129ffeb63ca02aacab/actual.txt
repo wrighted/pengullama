@@ -1,0 +1,95 @@
+F,PPP,P,P
+CO
+Successfully corrected typo in comment, start/end tokens confused.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to drivers: tmag5273: fix documentation of tmag5273_check_device_status. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+/**
+ * @brief checks for DIAG_FAIL errors and reads out the DEVICE_STATUS register if necessary
+ *
+* Prints a human readable representation to the log, if \c CONFIG_LOG is activated.
+*
+* @param drv_cfg[in] driver instance configuration
+* @param device_status[out] DEVICE_STATUS register if DIAG_FAIL is set
+ *
+ * @retval 0 on success
+* @retval "!= 0" on error (see @ref i2c_reg_read_byte for error codes)
+ *
+ * @note
+* If tmag5273_config.ignore_diag_fail is se
+*   -  \a device_status will be always set to \c 0,
+ *   - the function always returns \c 0.
+ */
+static int tmag5273_check_device_status(const struct tmag5273_config *drv_cfg,
+
+### Tokenized:
+
+Here is the faulty code which has been tokenized:
+
+begin_comment
+comment|/**
+end_comment
+
+### Error location:
+I have identified the issue in the tokenized code. I have placed a <START_ERROR> before the problematic tokens and a <END_ERROR> after the problematic tokens:
+
+begin_comment
+<END_ERROR>
+comment|/**
+end_comment
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_comment
+comment|/**
+end_comment
+
+### Response:
+I corrected the issue in the code you provided:
+
+/**
+ * @brief checks for DIAG_FAIL errors and reads out the DEVICE_STATUS register if necessary
+ *
+* Prints a human readable representation to the log, if \c CONFIG_LOG is activated.
+*
+* @param drv_cfg[in] driver instance configuration
+* @param device_status[out] DEVICE_STATUS register if DIAG_FAIL is set
+ *
+ * @retval 0 on success
+* @retval "!= 0" on error (see @ref i2c_reg_read_byte for error codes)
+ *
+ * @note
+* If tmag5273_config.ignore_diag_fail is se
+*   -  \a device_status will be always set to \c 0,
+ *   - the function always returns \c 0.
+ */
+static int tmag5273_check_device_status(const struct tmag5273_config *drv_cfg,
+The issue was with: drivers: tmag5273: fix documentation of tmag5273_check_device_status
+
+The documentation of tmag5273_check_device_status has an error
+in the description of the function parameters. Here is the corrected version:
+
+/**
+ * @brief checks for DIAG_FAIL errors and reads out the DEVICE_STATUS register if necessary
+ *
+* Prints a human readable representation to the log, if \c CONFIG_LOG is activated.
+*
+* @param drv_cfg[in] driver instance configuration
+* @param device_status[out] DEVICE_STATUS register if DIAG_FAIL is set
+ *
+ * @retval 0 on success
+* @retval "!= 0" on error (see @ref i2c_reg_read_byte for error codes)
+ *
+ * @note
+* If tmag5273_config.ignore_diag_fail is set
+*   -  \a device_status will be always set to \c 0,
+ *   - the function always returns \c 0.
+ */
+static int tmag5273_check_device_status(const struct tmag5273_config *drv_cfg,

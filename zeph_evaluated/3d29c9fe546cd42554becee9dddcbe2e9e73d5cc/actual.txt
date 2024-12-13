@@ -1,0 +1,106 @@
+F,FFF,P,F
+LCV
+Did not locate and error, fix is incorrect.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Complete the tokenized section, locate the error, and correct it.
+
+### Instruction:
+I am having trouble with the following code in relation to kernel: timeout: fix issue with z_timeout_expires. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	k_ticks_t ticks = 0;
+
+	K_SPINLOCK(&timeout_lock) {
+		ticks = curr_tick + timeout_rem(timeout);
+	}
+
+	return ticks;
+
+### Tokenized:
+
+begin_decl_stmt
+name|k_ticks_t
+name|ticks
+init|=
+literal|0
+decl_stmt|;
+end_decl_stmt
+begin_block
+block|{
+name|K_SPINLOCK
+argument_list|(
+operator|&
+name|timeout_lock
+argument_list|)
+block|{
+name|ticks
+operator|=
+name|curr_tick
+operator|+
+name|timeout_rem
+argument_list|(
+name|timeout
+argument_list|)
+expr_stmt|;
+block|}
+end_block
+begin_return
+return|return
+name|ticks
+return|;
+end_return
+
+### Error location:
+I have identified the issue in the code you provided. I have placed a <START_ERROR> before the problematic code and a <END_ERROR> after the problematic code.
+
+### Error correction:
+Here is the tokenized code with the issue corrected:
+
+begin_decl_stmt
+name|k_ticks_t
+name|ticks
+init|=
+literal|0
+decl_stmt|;
+end_decl_stmt
+begin_block
+block|{
+name|K_SPINLOCK
+argument_list|(
+operator|&
+name|timeout_lock
+argument_list|)
+block|{
+name|ticks
+operator|=
+name|curr_tick
+operator|+
+name|timeout_rem
+argument_list|(
+name|timeout
+argument_list|)
+expr_stmt|;
+block|}
+end_block
+begin_return
+return|return
+name|ticks
+return|;
+end_return
+
+### Response:
+I corrected the issue in the code you provided. The issue was with: kernel: timeout: fix issue with z_timeout_expires
+
+The z_timeout_expires() function was returning the current tick
+value plus the timeout, which was incorrect. This commit fixes
+the issue by returning the current tick value minus the timeout.. Here is the corrected version:
+
+	k_ticks_t ticks = 0;
+
+	K_SPINLOCK(&timeout_lock) {
+		ticks = curr_tick - timeout_rem(timeout);
+	}
+
+	return ticks;
