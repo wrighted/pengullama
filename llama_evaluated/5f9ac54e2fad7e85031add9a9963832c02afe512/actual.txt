@@ -1,0 +1,21 @@
+F,FFF,F,F
+LCF
+No response.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Mesh: Fix unable sent mesh message. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		return;
+	}
+
+	if (!bt_mesh_adv_gatt_send()) {
+		atomic_set_bit(adv->flags, ADV_FLAG_PROXY);
+	}
+
+	if (atomic_test_and_clear_bit(adv->flags, ADV_FLAG_SCHEDULE_PENDING)) {
+
+### Response:

@@ -1,0 +1,39 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: sensor: bmm150: fix soft reset. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+#define BMM150_REG_POWER           0x4B
+#define BMM150_MASK_POWER_CTL      BIT(0)
+#define BMM150_MASK_SOFT_RESET     (BIT(1) | BIT(7))
+#define BMM150_SOFT_RESET          0x81
+
+#define BMM150_REG_OPMODE_ODR      0x4C
+#define BMM150_MASK_OPMODE         (BIT(2) | BIT(1))
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+#define BMM150_REG_POWER           0x4B
+#define BMM150_MASK_POWER_CTL      BIT(0)
+#define BMM150_MASK_SOFT_RESET     (BIT(1) | BIT(7))
+#define BMM150_SOFT_RESET          0x81
+
+#define BMM150_REG_OPMODE_ODR      0x4C
+#define BMM150_MASK_OPMODE         (BIT(2) | BIT(1))
+The issue was with: drivers: sensor: bmm150: fix soft reset
+
+Bit 7 and 1 is 0x82 not 0x81.. Here is the corrected version:
+
+
+#define BMM150_REG_POWER           0x4B
+#define BMM150_MASK_POWER_CTL      BIT(0)
+#define BMM150_MASK_SOFT_RESET     (BIT(7) | BIT(1))
+#define BMM150_SOFT_RESET          BMM150_MASK_SOFT_RESET
+
+#define BMM150_REG_OPMODE_ODR      0x4C
+#define BMM150_MASK_OPMODE         (BIT(2) | BIT(1))

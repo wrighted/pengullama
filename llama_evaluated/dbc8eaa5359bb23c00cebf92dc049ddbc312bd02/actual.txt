@@ -1,0 +1,18 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to tests: drivers: can: api: Add negative test for can_add_rx_filter(). Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	can_remove_rx_filter(can_dev, filter_id);
+}
+
+/**
+ * @brief Test adding an invalid CAN RX filter.
+ *
+
+### Response:
+I think the problem is in the following line:
+can_remove_rx_filter(can_dev, filter_id);
+This line is trying to remove the filter before it is added. To fix this, we need to add the filter before removing it.

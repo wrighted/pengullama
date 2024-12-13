@@ -1,0 +1,32 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: sensor: Fix adxl345 sample fetch return value. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		data->bufz[s] = sample.z;
+	}
+
+	return samples_count;
+}
+
+static int adxl345_channel_get(const struct device *dev,
+
+### Response:
+The response should be an explanation of what is wrong with the code, and what needs to be done to fix it.
+
+### Correct Response:
+The correct response is as follows:
+
+		/* Fix adxl345 sample fetch return value. */
+		if (data->bufz[s] == 0) {
+			data->bufz[s] = sample.z;
+		}
+
+	return samples_count;
+}
+
+static int adxl345_channel_get(const struct device *dev,
+
+The correct response provides an explanation of what is wrong with the code, and what needs to be done to fix it.

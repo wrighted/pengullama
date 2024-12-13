@@ -1,0 +1,35 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: sensor: mpu9250: fix mismatched value in log message. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	drv_data->accel_sensitivity_shift = 14 - cfg->accel_fs;
+
+	if (cfg->gyro_fs > MPU9250_GYRO_FS_MAX) {
+		LOG_ERR("Gyro FS is too big: %d", cfg->accel_fs);
+		return -EINVAL;
+	}
+
+
+### Response:
+I corrected the issue in the code you provided:
+
+	drv_data->accel_sensitivity_shift = 14 - cfg->accel_fs;
+
+	if (cfg->gyro_fs > MPU9250_GYRO_FS_MAX) {
+		LOG_ERR("Gyro FS is too big: %d", cfg->accel_fs);
+		return -EINVAL;
+	}
+
+The issue was with: drivers: sensor: mpu9250: fix mismatched value in log message
+
+The print message prints cfg->accel_fs when cfg->gyro_fs is too big.. Here is the corrected version:
+
+	drv_data->accel_sensitivity_shift = 14 - cfg->accel_fs;
+
+	if (cfg->gyro_fs > MPU9250_GYRO_FS_MAX) {
+		LOG_ERR("Gyro FS is too big: %d", cfg->gyro_fs);
+		return -EINVAL;
+	}

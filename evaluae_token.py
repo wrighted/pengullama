@@ -5,7 +5,7 @@ from unsloth import FastLanguageModel
 import torch
 
 # Model parameters
-model_name = "wrighted/tokenzephllama_v0"
+model_name = "unsloth/Meta-Llama-3.1-8B-bnb-4bit"
 max_seq_length = 2048
 dtype = None
 load_in_4bit = True
@@ -22,7 +22,6 @@ FastLanguageModel.for_inference(model)
 # Ensure GPU and CPU functionality
 device_str = "cuda" if torch.cuda.is_available() else "cpu"
 device = torch.device(device_str)
-model.to(device)
 
 def main(filename, num_points):
     # Load the JSON data from the specified file
@@ -32,47 +31,38 @@ def main(filename, num_points):
     # Load the JSON string into a Python dictionary
     data = json.loads(json_out)
 
-    # Create the alpaca_prompt using formatted strings
-    intended_result = """Original commit: https://github.com/zephyrproject-rtos/zephyr/commit/{commit_hash}
-### Tokenized:
-{tokenized}
+    prompt = """Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+{instruction}
 
-### Error location:
-{error_location}
+### Input:
+{input}
 
-### Error correction:
-{error_correction}
-"""
-
-    llm_generated_result = """Below is some tokenized faulty code. Locate the error, and correct it.
-### Tokenized:
-{tokenized}
-
-### Error location:
-{response}
-"""
+### Response:
+{response}"""
 
     # Process only the specified number of points
     for idx, point in enumerate(data[:num_points]):
         try:
             # Create the directory for the current commit
             commit_hash = point['commit_hash']
-            output_dir = f"zeph_tokenized_evaluated/{commit_hash}"
+            output_dir = f"llama_evaluated/{commit_hash}"
             os.makedirs(output_dir, exist_ok=True)
 
             # Format the target output
-            target = intended_result.format(
+            target = prompt.format(
                 commit_hash=commit_hash,
-                tokenized=point['tokenized'],
-                error_location=point['error_location'],
-                error_correction=point['error_correction'],
+                instruction=point['instruction'],
+                input=point['input'],
+                response=point['response'],
             )
 
             # Prepare the input prompt for the model
-            tokenized = point['tokenized']
-            alpaca_prompt_text = llm_generated_result.format(
-                tokenized=tokenized,
-                response=""
+            alpaca_prompt_text = prompt.format(
+                commit_hash=commit_hash,
+                instruction=point['instruction'],
+                input=point['input'],
+                response="",
             )
 
             # Tokenize the input

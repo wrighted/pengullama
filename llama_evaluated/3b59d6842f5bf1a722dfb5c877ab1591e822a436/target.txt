@@ -1,0 +1,46 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I corrected the issue in the code you provided:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+The issue was with: sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode
+
+The ISM330DHCX driver immediately segfaults when run in SPI mode. A bad
+pointer is being passed into the `dev` param of `ism330dhcx_spi_read`.
+Tracing this back, it appears that the handle field of the ctx struct
+is being set to the device's data struct while `ism330dhcx_spi_read`
+expects `ctx->handle` to be a pointer to a device struct.
+
+Modify `ism330dhcx_spi_init()` to insert the correct pointer into the
+context struct. Unfortunately this requires a cast to discard the
+`const` qualifier, but this is how it is done in I2C mode (see
+`ism330dhcx_i2c_init()`). The only other way would be to change the
+declaration of `stmdev_ctx_t`, which is owned by the HAL module.. Here is the corrected version:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = (void *)dev;
+
+	return 0;
+}

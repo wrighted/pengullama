@@ -1,0 +1,20 @@
+F,FFF,F,F
+LCV
+Did not provide relevant information.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers/spi/spi_xlnx_axi_quadspi: Build fix w CONFIG_SPI_ASYNC. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		 * work in the ISR, so just post the event.
+		 */
+#ifdef CONFIG_SPI_ASYNC
+		if (ctx->asynchronous) {
+			xlnx_quadspi_read_fifo(dev);
+			xlnx_quadspi_start_tx(dev);
+
+### Response:
+The code has a few issues. Firstly, the asynchronous flag should be checked before attempting to read the fifo. Secondly, the start_tx function should be called after the fifo has been read. Lastly, the code should be updated to use the correct function calls for the asynchronous mode.

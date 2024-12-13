@@ -1,0 +1,36 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: phy_mii: Remove the unneeded header file. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <soc.h>
+#include <zephyr/drivers/mdio.h>
+#include <zephyr/net/phy.h>
+#include <zephyr/net/mii.h>
+
+### Response:
+I corrected the issue in the code you provided:
+
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <soc.h>
+#include <zephyr/drivers/mdio.h>
+#include <zephyr/net/phy.h>
+#include <zephyr/net/mii.h>
+The issue was with: drivers: phy_mii: Remove the unneeded header file
+
+Remove the 'soc.h' to fix the compiling error as the 'phy_mii.c'
+doesn't need it.. Here is the corrected version:
+
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/mdio.h>
+#include <zephyr/net/phy.h>
+#include <zephyr/net/mii.h>

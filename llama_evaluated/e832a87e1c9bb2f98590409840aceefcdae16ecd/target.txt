@@ -1,0 +1,37 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to include: usb: include usb_ch9.h. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+#define ZEPHYR_INCLUDE_USB_HID_CLASS_DEVICE_H_
+
+#include <zephyr/usb/class/hid.h>
+
+#ifdef __cplusplus
+extern "C" {
+
+### Response:
+I corrected the issue in the code you provided:
+
+#define ZEPHYR_INCLUDE_USB_HID_CLASS_DEVICE_H_
+
+#include <zephyr/usb/class/hid.h>
+
+#ifdef __cplusplus
+extern "C" {
+The issue was with: include: usb: include usb_ch9.h
+
+In usb_hid.h `struct usb_setup_packet` is used. This is defined in
+usb_ch9.h but not included in usb_hid.h which leads to build errors when
+you include the usb header files in the wrong order. This commit fixes
+this behaviour.. Here is the corrected version:
+
+#define ZEPHYR_INCLUDE_USB_HID_CLASS_DEVICE_H_
+
+#include <zephyr/usb/class/hid.h>
+#include <zephyr/usb/usb_ch9.h>
+
+#ifdef __cplusplus
+extern "C" {

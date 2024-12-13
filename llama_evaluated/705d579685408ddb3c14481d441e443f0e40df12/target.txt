@@ -1,0 +1,45 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: dma: dma_nxp_edma: allow channel re-configuration. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		}
+		break;
+	case CHAN_STATE_CONFIGURED:
+		if (next != CHAN_STATE_STARTED) {
+			return -EPERM;
+		}
+		break;
+
+### Response:
+I corrected the issue in the code you provided:
+
+		}
+		break;
+	case CHAN_STATE_CONFIGURED:
+		if (next != CHAN_STATE_STARTED) {
+			return -EPERM;
+		}
+		break;
+The issue was with: drivers: dma: dma_nxp_edma: allow channel re-configuration
+
+Currently, the state transition function doesn't allow
+the re-configuration of an already configured channel
+(i.e: CHAN_CONFIGURED -> CHAN_CONFIGURED transition). This
+causes problems when using `pulseaudio` and `SOF` because
+the same channel ends up being configured multiple times
+in the beginning due to how pulse seems to work. Logically
+speaking, re-configuring an already configured channel is
+not wrong so this commit solves the issue by allowing
+the CHAN_CONFIGURED -> CHAN_CONFIGURED transition.. Here is the corrected version:
+
+		}
+		break;
+	case CHAN_STATE_CONFIGURED:
+		if (next != CHAN_STATE_STARTED &&
+		    next != CHAN_STATE_CONFIGURED) {
+			return -EPERM;
+		}
+		break;

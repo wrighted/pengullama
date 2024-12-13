@@ -1,0 +1,36 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to modules: hostap: Fix typo in NM unregistration. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		goto out;
+	}
+
+	ret = wifi_nm_unregister_mgd_iface(wifi_nm_get_instance("wpa_supplicant"), iface);
+	if (ret) {
+		LOG_ERR("Failed to unregister mgd iface %s with native stack (%d)",
+			ifname, ret);
+
+### Response:
+I corrected the issue in the code you provided:
+
+		goto out;
+	}
+
+	ret = wifi_nm_unregister_mgd_iface(wifi_nm_get_instance("wpa_supplicant"), iface);
+	if (ret) {
+		LOG_ERR("Failed to unregister mgd iface %s with native stack (%d)",
+			ifname, ret);
+The issue was with: modules: hostap: Fix typo in NM unregistration
+
+The module name is not modified in remove.. Here is the corrected version:
+
+		goto out;
+	}
+
+	ret = wifi_nm_unregister_mgd_iface(wifi_nm_get_instance("wifi_supplicant"), iface);
+	if (ret) {
+		LOG_ERR("Failed to unregister mgd iface %s with native stack (%d)",
+			ifname, ret);

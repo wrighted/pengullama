@@ -1,0 +1,35 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to dt-bindings: display: fix lcd_interface ingroup. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+/**
+ * @brief LCD Interface
+ * @defgroup lcd_interface LCD Interface
+* @ingroup display_interfaces
+ * @{
+ */
+
+
+### Response:
+I corrected the issue in the code you provided:
+
+/**
+ * @brief LCD Interface
+ * @defgroup lcd_interface LCD Interface
+* @ingroup display_interfaces
+ * @{
+ */
+
+The issue was with: dt-bindings: display: fix lcd_interface ingroup
+
+s/display_interfaces/display_interface. Here is the corrected version:
+
+/**
+ * @brief LCD Interface
+ * @defgroup lcd_interface LCD Interface
+* @ingroup display_interface
+ * @{
+ */

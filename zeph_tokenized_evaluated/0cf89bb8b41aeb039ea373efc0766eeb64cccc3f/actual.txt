@@ -1,3 +1,7 @@
+F,FFF,F,F
+LCI
+Gibberish response.
+
 Below is some tokenized faulty code. Locate the error, and correct it.
 ### Tokenized:
 Here is the faulty code which has been tokenized:

@@ -1,0 +1,311 @@
+P,FPF,F,F
+LCV
+While this change occurs similaroly in a smiliar location, it is not the same.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx_spi.handle = data;
+
+	return 0;
+}
+
+### Instruction:
+I am having trouble with the following code in relation to sensor: ism330dhcx: Incorrect handle passed to ctx struct in SPI mode. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	data->ctx_spi.mdelay = (stmdev_mdelay_ptr) stmemsc_mdelay;
+
+	data->ctx = &data->ctx_spi;
+	data->ctx->handle = data;
+
+	return 0;
+}
+
+### Response:
+I think there is a typo in the code. The variable data->ctx_spi.mdelay is not assigned to the variable data->ctx_spi.handle. I think the code should be changed to:
+
+	data->ctx_spi.md

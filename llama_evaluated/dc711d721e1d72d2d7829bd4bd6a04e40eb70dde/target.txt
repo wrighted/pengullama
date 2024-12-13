@@ -1,0 +1,40 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to Revert "tests: drivers: counter: basic_api: Tweak test timing". Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+{
+	int err;
+	uint32_t cnt;
+	uint32_t us = 1500;
+	uint32_t ticks = counter_us_to_ticks(dev, us);
+	uint32_t top = counter_get_top_value(dev);
+
+
+### Response:
+I corrected the issue in the code you provided:
+
+{
+	int err;
+	uint32_t cnt;
+	uint32_t us = 1500;
+	uint32_t ticks = counter_us_to_ticks(dev, us);
+	uint32_t top = counter_get_top_value(dev);
+
+The issue was with: Revert "tests: drivers: counter: basic_api: Tweak test timing"
+
+This reverts commit 331442f0591532b0822b2d54d85a221d5a36fbe4.
+
+Change was introduced because it was failing on slow core
+(nrf54h20/cpuppr) however it turned out that there was a bug in the
+driver and now test passes without this tweak which make the test
+last twice longer.. Here is the corrected version:
+
+{
+	int err;
+	uint32_t cnt;
+	uint32_t us = 1000;
+	uint32_t ticks = counter_us_to_ticks(dev, us);
+	uint32_t top = counter_get_top_value(dev);

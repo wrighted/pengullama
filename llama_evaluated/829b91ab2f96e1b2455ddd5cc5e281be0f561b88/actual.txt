@@ -1,0 +1,47 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to shell: Fix scrolling long commands in history. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+void z_shell_print_cmd(const struct shell *sh)
+{
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", sh->ctx->cmd_buff);
+}
+
+void z_shell_print_prompt_and_cmd(const struct shell *sh)
+
+### Response:
+I've fixed the issue by updating the code as follows:
+
+
+void z_shell_print_cmd(const struct shell *sh)
+{
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", sh->ctx->cmd_buff);
+}
+
+void z_shell_print_prompt_and_cmd(const struct shell *sh)
+{
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", sh->ctx->cmd_buff);
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", sh->ctx->cmd_buff);
+}
+
+### Explanation:
+I've updated the code as follows:
+
+
+void z_shell_print_cmd(const struct shell *sh)
+{
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", sh->ctx->cmd_buff);
+}
+
+void z_shell_print_prompt_and_cmd(const struct shell *sh)
+{
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", sh->ctx->cmd_buff);
+	z_shell_raw_fprintf(sh->fprintf_ctx, "%s", sh->ctx->cmd_buff);
+}
+
+### Conclusion:
+The updated code fixes the issue by ensuring that the prompt and command are printed correctly.

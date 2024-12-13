@@ -1,0 +1,60 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to sys: atomic_c: skip syscall tracing. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+#endif
+
+#ifdef CONFIG_ATOMIC_OPERATIONS_C
+#include <syscalls/atomic_c.h>
+#endif
+
+#endif /* ZEPHYR_INCLUDE_SYS_ATOMIC_C_H_ */
+
+### Response:
+I corrected the issue in the code you provided:
+
+#endif
+
+#ifdef CONFIG_ATOMIC_OPERATIONS_C
+#include <syscalls/atomic_c.h>
+#endif
+
+#endif /* ZEPHYR_INCLUDE_SYS_ATOMIC_C_H_ */
+The issue was with: sys: atomic_c: skip syscall tracing
+
+This skips syscall tracing on atomic_c.h, as the compiler
+does not like "({ ... tracing code ... })" and complains:
+
+  error: expected identifier or '(' before '{' token
+
+Even though there is already a '(' before '{'.. Here is the corrected version:
+
+#endif
+
+#ifdef CONFIG_ATOMIC_OPERATIONS_C
+
+#ifndef DISABLE_SYSCALL_TRACING
+/* Skip defining macros of atomic_*() for syscall tracing.
+* Compiler does not like "({ ... tracing code ... })" and complains
+*
+*   error: expected identifier or '(' before '{' token
+*
+* ... even though there is a '(' before '{'.
+*/
+#define DISABLE_SYSCALL_TRACING
+#define _REMOVE_DISABLE_SYSCALL_TRACING
+#endif
+
+#include <syscalls/atomic_c.h>
+
+#ifdef _REMOVE_DISABLE_SYSCALL_TRACING
+#undef DISABLE_SYSCALL_TRACING
+#undef _REMOVE_DISABLE_SYSCALL_TRACING
+#endif
+
+#endif
+
+#endif /* ZEPHYR_INCLUDE_SYS_ATOMIC_C_H_ */

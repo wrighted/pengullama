@@ -1,0 +1,34 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Fix coverity issue 340852. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	cte_info.type = df_cfg->cte_type;
+	cte_info.time = df_cfg->cte_length;
+
+	/* Note: ULL_ADV_PDU_EXTRA_DATA_ALLOC_ALWAYS is just information that extra_data
+	 * is required in case of this ull_adv_sync_pdu_alloc.
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	cte_info.type = df_cfg->cte_type;
+	cte_info.time = df_cfg->cte_length;
+
+	/* Note: ULL_ADV_PDU_EXTRA_DATA_ALLOC_ALWAYS is just information that extra_data
+	 * is required in case of this ull_adv_sync_pdu_alloc.
+The issue was with: Bluetooth: Controller: Fix coverity issue 340852
+
+Fix coverity issue 340852, Uninitialized scalar variable.. Here is the corrected version:
+
+
+	cte_info.type = df_cfg->cte_type;
+	cte_info.time = df_cfg->cte_length;
+	cte_info.rfu = 0U;
+
+	/* Note: ULL_ADV_PDU_EXTRA_DATA_ALLOC_ALWAYS is just information that extra_data
+	 * is required in case of this ull_adv_sync_pdu_alloc.

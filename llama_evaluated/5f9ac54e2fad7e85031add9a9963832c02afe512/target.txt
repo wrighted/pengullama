@@ -1,0 +1,46 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Mesh: Fix unable sent mesh message. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		return;
+	}
+
+	if (!bt_mesh_adv_gatt_send()) {
+		atomic_set_bit(adv->flags, ADV_FLAG_PROXY);
+	}
+
+	if (atomic_test_and_clear_bit(adv->flags, ADV_FLAG_SCHEDULE_PENDING)) {
+
+### Response:
+I corrected the issue in the code you provided:
+
+		return;
+	}
+
+	if (!bt_mesh_adv_gatt_send()) {
+		atomic_set_bit(adv->flags, ADV_FLAG_PROXY);
+	}
+
+	if (atomic_test_and_clear_bit(adv->flags, ADV_FLAG_SCHEDULE_PENDING)) {
+The issue was with: Bluetooth: Mesh: Fix unable sent mesh message
+
+When proxy advertising enabled, but at same time, the
+connection event report, will cause `ADV_FLAG_PROXY` not
+set, so cb `connected` will not be process, cause mesh message
+unable to sent.
+
+Fixes: https://github.com/zephyrproject-rtos/zephyr/issues/58721. Here is the corrected version:
+
+		return;
+	}
+
+	atomic_set_bit(adv->flags, ADV_FLAG_PROXY);
+
+	if (bt_mesh_adv_gatt_send()) {
+		atomic_clear_bit(adv->flags, ADV_FLAG_PROXY);
+	}
+
+	if (atomic_test_and_clear_bit(adv->flags, ADV_FLAG_SCHEDULE_PENDING)) {

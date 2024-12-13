@@ -1,0 +1,39 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to soc: mcxc: Enable bandgap buffer for on die temperature measurement. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+void soc_early_init_hook(void)
+{
+	clock_init();
+}
+
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+void soc_early_init_hook(void)
+{
+	clock_init();
+}
+
+The issue was with: soc: mcxc: Enable bandgap buffer for on die temperature measurement
+
+Bandgap voltage is used for on die temperature measurement. Bandgap
+buffer has to be enabled explicitly to get correct tempearature.
+Enable the buffer if TEMP_KINETIS is selected.. Here is the corrected version:
+
+
+void soc_early_init_hook(void)
+{
+#ifdef CONFIG_TEMP_KINETIS
+	/* enable bandgap buffer */
+	PMC->REGSC |= PMC_REGSC_BGBE_MASK;
+#endif /* CONFIG_TEMP_KINETIS */
+
+	clock_init();
+}

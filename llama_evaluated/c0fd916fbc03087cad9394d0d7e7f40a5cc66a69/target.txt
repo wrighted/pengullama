@@ -1,0 +1,55 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: sensor: wsen_itds: fix device ID mismatch return value. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	if (rval != ITDS_DEVICE_ID) {
+		LOG_ERR("device ID mismatch: %x", rval);
+		return ret;
+	}
+
+	ret = i2c_reg_update_byte_dt(&cfg->i2c, ITDS_REG_CTRL2,
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	if (rval != ITDS_DEVICE_ID) {
+		LOG_ERR("device ID mismatch: %x", rval);
+		return ret;
+	}
+
+	ret = i2c_reg_update_byte_dt(&cfg->i2c, ITDS_REG_CTRL2,
+The issue was with: drivers: sensor: wsen_itds: fix device ID mismatch return value
+
+During initialization, zero is returned if an unexpected device ID is
+read because the returned variable is not written to after a previous
+non-zero check. Return -EIO instead to indicate an error occurred.
+
+Detected with the following Coccinelle script:
+
+        @@
+        identifier I;
+        @@
+
+        *if (I) {
+             ...
+             return ...;
+         }
+
+         if (...) {
+             ... when != I
+                 when any
+        *    return I;
+         }. Here is the corrected version:
+
+
+	if (rval != ITDS_DEVICE_ID) {
+		LOG_ERR("device ID mismatch: %x", rval);
+		return -EIO;
+	}
+
+	ret = i2c_reg_update_byte_dt(&cfg->i2c, ITDS_REG_CTRL2,

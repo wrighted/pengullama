@@ -1,0 +1,36 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to sd: sd_ops: fix DISK_IOCTL_CTRL_SYNC return code. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		 * cache flush is not required here
+		 */
+		ret = sdmmc_wait_ready(card);
+	default:
+		ret = -ENOTSUP;
+	}
+
+### Response:
+I corrected the issue in the code you provided:
+
+		 * cache flush is not required here
+		 */
+		ret = sdmmc_wait_ready(card);
+	default:
+		ret = -ENOTSUP;
+	}
+The issue was with: sd: sd_ops: fix DISK_IOCTL_CTRL_SYNC return code
+
+SD IOCTL handling for DISK_IOCTL_CTRL_SYNC was falling through to the
+default return statement, and returning an error when disk sync
+succeeded. Fix this issue by properly breaking in IOCTL handler.. Here is the corrected version:
+
+		 * cache flush is not required here
+		 */
+		ret = sdmmc_wait_ready(card);
+		break;
+	default:
+		ret = -ENOTSUP;
+	}

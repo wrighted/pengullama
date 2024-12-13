@@ -1,0 +1,39 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers/espi: it8xxx2: Fix mask when SRAM size not the power of 2. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+ */
+#define IT8XXX2_ESPI_H2RAM_POOL_SIZE_MAX 0x1000
+#define IT8XXX2_ESPI_H2RAM_OFFSET_MASK   GENMASK(5, 0)
+#define IT8XXX2_ESPI_H2RAM_BASEADDR_MASK (KB(CONFIG_SRAM_SIZE) - 1)
+
+#if defined(CONFIG_ESPI_PERIPHERAL_ACPI_SHM_REGION)
+#define H2RAM_ACPI_SHM_MAX ((CONFIG_ESPI_IT8XXX2_ACPI_SHM_H2RAM_SIZE) + \
+
+### Response:
+I corrected the issue in the code you provided:
+
+ */
+#define IT8XXX2_ESPI_H2RAM_POOL_SIZE_MAX 0x1000
+#define IT8XXX2_ESPI_H2RAM_OFFSET_MASK   GENMASK(5, 0)
+#define IT8XXX2_ESPI_H2RAM_BASEADDR_MASK (KB(CONFIG_SRAM_SIZE) - 1)
+
+#if defined(CONFIG_ESPI_PERIPHERAL_ACPI_SHM_REGION)
+#define H2RAM_ACPI_SHM_MAX ((CONFIG_ESPI_IT8XXX2_ACPI_SHM_H2RAM_SIZE) + \
+The issue was with: drivers/espi: it8xxx2: Fix mask when SRAM size not the power of 2
+
+When using the it8xxx2bx chip, because the SRAM size is 60k and
+not a power of 2, using (CONFIG_SRAM_SIZE - 1) results in an
+incorrect value for the h2ram base address mask.
+Therefore, the mask is declared as GEMASK(19, 0) here.. Here is the corrected version:
+
+ */
+#define IT8XXX2_ESPI_H2RAM_POOL_SIZE_MAX 0x1000
+#define IT8XXX2_ESPI_H2RAM_OFFSET_MASK   GENMASK(5, 0)
+#define IT8XXX2_ESPI_H2RAM_BASEADDR_MASK GENMASK(19, 0)
+
+#if defined(CONFIG_ESPI_PERIPHERAL_ACPI_SHM_REGION)
+#define H2RAM_ACPI_SHM_MAX ((CONFIG_ESPI_IT8XXX2_ACPI_SHM_H2RAM_SIZE) + \

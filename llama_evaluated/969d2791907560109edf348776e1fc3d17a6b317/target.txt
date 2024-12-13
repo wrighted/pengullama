@@ -1,0 +1,40 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to samples: Bluetooth: Unicast client missing err check on sem. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	for (size_t i = 0U; i < configured_stream_count; i++) {
+		printk("QoS: waiting for %zu streams\n", configured_stream_count);
+		k_sem_take(&sem_stream_qos, K_FOREVER);
+	}
+
+	return 0;
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	for (size_t i = 0U; i < configured_stream_count; i++) {
+		printk("QoS: waiting for %zu streams\n", configured_stream_count);
+		k_sem_take(&sem_stream_qos, K_FOREVER);
+	}
+
+	return 0;
+The issue was with: samples: Bluetooth: Unicast client missing err check on sem
+
+Added missing error check when taking the sem_stream_qos.. Here is the corrected version:
+
+
+	for (size_t i = 0U; i < configured_stream_count; i++) {
+		printk("QoS: waiting for %zu streams\n", configured_stream_count);
+		err = k_sem_take(&sem_stream_qos, K_FOREVER);
+		if (err != 0) {
+			printk("failed to take sem_stream_qos (err %d)\n", err);
+			return err;
+		}
+	}
+
+	return 0;

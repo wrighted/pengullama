@@ -1,0 +1,356 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+The response is incorrect. The response should be as follows:
+
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as

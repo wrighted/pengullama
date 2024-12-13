@@ -1,0 +1,40 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: sensor: Fix adxl345 sample fetch return value. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		data->bufz[s] = sample.z;
+	}
+
+	return samples_count;
+}
+
+static int adxl345_channel_get(const struct device *dev,
+
+### Response:
+I corrected the issue in the code you provided:
+
+		data->bufz[s] = sample.z;
+	}
+
+	return samples_count;
+}
+
+static int adxl345_channel_get(const struct device *dev,
+The issue was with: drivers: sensor: Fix adxl345 sample fetch return value
+
+Fixes the adxl345 accelerometer driver to return zero on sample fetch
+success, as specified by the sensor driver API. Prior to this change,
+the driver incorrectly returned a positive non-zero value on sample
+fetch success, which in turn caused a bus fault getting data with the
+sensor shell.. Here is the corrected version:
+
+		data->bufz[s] = sample.z;
+	}
+
+	return 0;
+}
+
+static int adxl345_channel_get(const struct device *dev,

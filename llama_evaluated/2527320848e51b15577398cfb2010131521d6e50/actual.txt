@@ -1,0 +1,31 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to net: lib: sntp: add support for unspecified IP-family type. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	uint64_t deadline;
+	uint32_t iter_timeout;
+
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_protocol = 0;
+	/* 123 is the standard SNTP port per RFC4330 */
+
+### Response:
+You have not specified the IP address. Please specify the IP address and port number. Here is the corrected code:
+
+	uint64_t deadline;
+	uint32_t iter_timeout;
+
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_protocol = 0;
+	/* 123 is the standard SNTP port per RFC4330 */
+
+	/* Specify the IP address */
+	hints.ai_addr = inet_addr("192.168.0.1");
+
+### Explanation:
+In the given code, the IP address is not specified. To fix this issue, you need to specify the IP address and port number. In the corrected code, we have specified the IP address as "192.168.0.1".

@@ -1,0 +1,42 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to kernel: timeout: fix issue with z_timeout_expires. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	k_ticks_t ticks = 0;
+
+	K_SPINLOCK(&timeout_lock) {
+		ticks = curr_tick + timeout_rem(timeout);
+	}
+
+	return ticks;
+
+### Response:
+I corrected the issue in the code you provided:
+
+	k_ticks_t ticks = 0;
+
+	K_SPINLOCK(&timeout_lock) {
+		ticks = curr_tick + timeout_rem(timeout);
+	}
+
+	return ticks;
+The issue was with: kernel: timeout: fix issue with z_timeout_expires
+
+- issue found with Ztest case of test_thread_timeout_remaining_expires
+  on Intel ISH platform when adjust CONFIG_SYS_CLOCK_TICKS_PER_SEC
+  to 10k.
+- timeout_rem() return exact remaining ticks which is calibrated by
+  decrease elapsed(), while z_timeout_expires try to get expire ticks
+  to be timeout using current tick as base, so need get exact current
+  ticks by plus elasped().. Here is the corrected version:
+
+	k_ticks_t ticks = 0;
+
+	K_SPINLOCK(&timeout_lock) {
+		ticks = curr_tick + timeout_rem(timeout) + elapsed();
+	}
+
+	return ticks;

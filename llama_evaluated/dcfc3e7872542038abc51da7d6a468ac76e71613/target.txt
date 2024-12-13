@@ -1,0 +1,40 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: gpio: imx rt11xx: fix wrong gpio pull disable mask. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+			}
+		} else {
+			/* Set pin to no pull */
+			reg |= IOMUXC_SW_PAD_CTL_PAD_PUS_MASK;
+		}
+		/* PDRV/SNVS/LPSR reg have different ODE bits */
+		if (config->pin_muxes[cfg_idx].pdrv_mux) {
+
+### Response:
+I corrected the issue in the code you provided:
+
+			}
+		} else {
+			/* Set pin to no pull */
+			reg |= IOMUXC_SW_PAD_CTL_PAD_PUS_MASK;
+		}
+		/* PDRV/SNVS/LPSR reg have different ODE bits */
+		if (config->pin_muxes[cfg_idx].pdrv_mux) {
+The issue was with: drivers: gpio: imx rt11xx: fix wrong gpio pull disable mask
+
+Fixes: #75390
+A wrong bit mask (wrong: IOMUXC_SW_PAD_CTL_PAD_PUS_MASK = 0x8) was used.
+That bit mask is for PUE/PUS-type gpio registers, but this is the
+section for registers with alternative PULL (PDRV) type layout.
+Right bit mask: IOMUXC_SW_PAD_CTL_PAD_PULL_MASK. Here is the corrected version:
+
+			}
+		} else {
+			/* Set pin to no pull */
+			reg |= IOMUXC_SW_PAD_CTL_PAD_PULL_MASK;
+		}
+		/* PDRV/SNVS/LPSR reg have different ODE bits */
+		if (config->pin_muxes[cfg_idx].pdrv_mux) {

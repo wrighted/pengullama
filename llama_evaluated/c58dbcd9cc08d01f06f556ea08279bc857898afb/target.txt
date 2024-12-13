@@ -1,0 +1,37 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: charger: Corrects typo in property documentation. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	 * Configuration to issue a notification to the system based on the input current
+	 * level and timing
+	 *
+	 * Value should be of type struct charger_input_current_notifier
+	 */
+	CHARGER_PROP_INPUT_CURRENT_NOTIFICATION,
+	/** Reserved to demark end of common charger properties */
+
+### Response:
+I corrected the issue in the code you provided:
+
+	 * Configuration to issue a notification to the system based on the input current
+	 * level and timing
+	 *
+	 * Value should be of type struct charger_input_current_notifier
+	 */
+	CHARGER_PROP_INPUT_CURRENT_NOTIFICATION,
+	/** Reserved to demark end of common charger properties */
+The issue was with: drivers: charger: Corrects typo in property documentation
+
+Corrects expected type mentioned in the documentation of the
+CHARGER_PROP_INPUT_CURRENT_NOTIFICATION.. Here is the corrected version:
+
+	 * Configuration to issue a notification to the system based on the input current
+	 * level and timing
+	 *
+	 * Value should be of type struct charger_current_notifier
+	 */
+	CHARGER_PROP_INPUT_CURRENT_NOTIFICATION,
+	/** Reserved to demark end of common charger properties */

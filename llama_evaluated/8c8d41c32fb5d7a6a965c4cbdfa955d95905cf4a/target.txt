@@ -1,0 +1,51 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to samples: drivers: uart: Detect missing FIFO mode in echo_bot. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+	}
+
+	/* configure interrupt and callback to receive data */
+	uart_irq_callback_user_data_set(uart_dev, serial_cb, NULL);
+	uart_irq_rx_enable(uart_dev);
+
+	print_uart("Hello! I'm your echo bot.\r\n");
+
+### Response:
+I corrected the issue in the code you provided:
+
+	}
+
+	/* configure interrupt and callback to receive data */
+	uart_irq_callback_user_data_set(uart_dev, serial_cb, NULL);
+	uart_irq_rx_enable(uart_dev);
+
+	print_uart("Hello! I'm your echo bot.\r\n");
+The issue was with: samples: drivers: uart: Detect missing FIFO mode in echo_bot
+
+Print an error message if the UART doesn't support FIFO mode or FIFO
+mode is not enabled.
+
+Previously the sample would run with no errors, but wouldn't receive or
+echo any data.. Here is the corrected version:
+
+	}
+
+	/* configure interrupt and callback to receive data */
+	int ret = uart_irq_callback_user_data_set(uart_dev, serial_cb, NULL);
+
+	if (ret < 0) {
+		if (ret == -ENOTSUP) {
+			printk("Interrupt-driven UART API support not enabled\n");
+		} else if (ret == -ENOSYS) {
+			printk("UART device does not support interrupt-driven API\n");
+		} else {
+			printk("Error setting UART callback: %d\n", ret);
+		}
+		return;
+	}
+	uart_irq_rx_enable(uart_dev);
+
+	print_uart("Hello! I'm your echo bot.\r\n");

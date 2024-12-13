@@ -1,0 +1,40 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to power_domain: intel_adsp: correct function call order. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	switch (action) {
+	case PM_DEVICE_ACTION_RESUME:
+		pm_device_children_action_run(dev, PM_DEVICE_ACTION_TURN_ON, NULL);
+		pd_intel_adsp_set_power_enable(reg_bits, true);
+		break;
+	case PM_DEVICE_ACTION_SUSPEND:
+		pm_device_children_action_run(dev, PM_DEVICE_ACTION_TURN_OFF, NULL);
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	switch (action) {
+	case PM_DEVICE_ACTION_RESUME:
+		pm_device_children_action_run(dev, PM_DEVICE_ACTION_TURN_ON, NULL);
+		pd_intel_adsp_set_power_enable(reg_bits, true);
+		break;
+	case PM_DEVICE_ACTION_SUSPEND:
+		pm_device_children_action_run(dev, PM_DEVICE_ACTION_TURN_OFF, NULL);
+The issue was with: power_domain: intel_adsp: correct function call order
+
+Changing function call order. We need to first power-up the power domain
+before we turn on the devices.. Here is the corrected version:
+
+
+	switch (action) {
+	case PM_DEVICE_ACTION_RESUME:
+		pd_intel_adsp_set_power_enable(reg_bits, true);
+		pm_device_children_action_run(dev, PM_DEVICE_ACTION_TURN_ON, NULL);
+		break;
+	case PM_DEVICE_ACTION_SUSPEND:
+		pm_device_children_action_run(dev, PM_DEVICE_ACTION_TURN_OFF, NULL);

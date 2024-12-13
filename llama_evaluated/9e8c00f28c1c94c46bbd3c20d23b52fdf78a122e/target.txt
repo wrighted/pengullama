@@ -1,0 +1,46 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to drivers: stm32-rtc: return -ENODATA when RTC is uninitialized. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+		return err;
+	}
+
+	do {
+		/* read date, time and subseconds and relaunch if a day increment occurred
+		 * while doing so as it will result in an erroneous result otherwise
+
+### Response:
+I corrected the issue in the code you provided:
+
+		return err;
+	}
+
+	do {
+		/* read date, time and subseconds and relaunch if a day increment occurred
+		 * while doing so as it will result in an erroneous result otherwise
+The issue was with: drivers: stm32-rtc: return -ENODATA when RTC is uninitialized
+
+rtc_get_time() on STM32 does not implement the -ENODATA return code.
+This prevents testing the initialisation status of the RTC.
+
+Fixed by reading INITS flag and adding a error path in
+rtc_stm32_get_time().. Here is the corrected version:
+
+		return err;
+	}
+
+	if (!LL_RTC_IsActiveFlag_INITS(RTC)) {
+		/* INITS flag is set when the calendar has been initialiazed. This flag is
+		 * reset only on backup domain reset, so it can be read after a system
+		 * reset to check if the calendar has been initialized.
+		 */
+		k_mutex_unlock(&data->lock);
+		return -ENODATA;
+	}
+
+	do {
+		/* read date, time and subseconds and relaunch if a day increment occurred
+		 * while doing so as it will result in an erroneous result otherwise

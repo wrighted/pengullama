@@ -1,0 +1,54 @@
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to Bluetooth: Controller: Remove incorrect check of RFU bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+
+### Response:
+I corrected the issue in the code you provided:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Regard PDU as invalid if a RFU field is set, we do not know the
+	 * size of this future field, hence will cause incorrect calculation of
+	 * offset to ACAD field.
+	 */
+	if (h->rfu) {
+		goto ull_scan_aux_rx_flush;
+	}
+
+	ptr = h->data;
+
+The issue was with: Bluetooth: Controller: Remove incorrect check of RFU bit
+
+RFU bits has to be ignored according to the spec; In addition,
+some MediaTek devices seems to have it set (by mistake I assume),
+so having the check means we cannot sync to these devices. Here is the corrected version:
+
+
+	h = (void *)p->ext_hdr_adv_data;
+
+	/* Note: The extended header contains a RFU flag that could potentially cause incorrect
+	 * calculation of offset to ACAD field if it gets used to add a new header field; However,
+	 * from discussion in BT errata ES-8080 it seems clear that BT SIG is aware that the RFU
+	 * bit can not be used to add a new field since existing implementations will not be able
+	 * to calculate the start of ACAD in that case
+	 */
+
+	ptr = h->data;

@@ -1,0 +1,30 @@
+P,PPP,P,P
+LCV
+Matches expected.
+
+Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+### Instruction:
+I am having trouble with the following code in relation to cache: aspeed: Fix typo of CACHE_ENABLE bit. Whats wrong? Please fix this issue.
+
+### Input:
+Here is the faulty code:
+
+
+	syscon_read_reg(dev, CACHE_FUNC_CTRL_REG, &ctrl);
+
+	return (ctrl & CCHE_EANABLE)? CACHE_LINE_SIZE : 0;
+}
+#endif /* CONFIG_ICACHE_LINE_SIZE_DETECT */
+
+### Response:
+Here is the fixed code:
+
+
+	syscon_read_reg(dev, CACHE_FUNC_CTRL_REG, &ctrl);
+
+	return (ctrl & CACHE_ENABLE)? CACHE_LINE_SIZE : 0;
+}
+#endif /* CONFIG_ICACHE_LINE_SIZE_DETECT */
+
+### Explanation:
+In the original code, the constant CACHE_ENABLE was misspelled as CCHE_EANABLE. This is a typo and should be corrected to match the constant's intended value. The corrected code fixes this typo and ensures that the intended value is used in the function.
